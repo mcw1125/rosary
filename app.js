@@ -5,7 +5,16 @@ const prayers = [
   { id:"hail_mary", text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen." },
   { id:"glory_be", text:"Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen." },
   { id:"fatima_prayer", text:"O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of thy mercy. Amen." },
-  { id:"hail_holy_queen", text:"Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this, our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Amen." },
+  {
+    id: "hail_holy_queen",
+    text: 
+      "Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. " +
+      "To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, " +
+      "mourning and weeping in this valley of tears. Turn then, most gracious advocate, " +
+      "thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. " +
+      "O clement, O loving, O sweet Virgin Mary. " +
+      "Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen."
+  },
   { id:"final_prayer", text:"Let us pray. O God, whose only-begotten Son, by his life, death and resurrection, has purchased for us the rewards of eternal life; grant, we beseech thee, that while meditating on these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may both imitate what they contain and obtain what they promise. Through Christ our Lord. Amen." }
 ];
 
