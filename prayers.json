@@ -1,0 +1,24 @@
+{
+  "sequence": [
+    {
+      "id": "creed",
+      "text": "I believe in God, the Father almighty..."
+    },
+    {
+      "id": "our_father",
+      "text": "Our Father, who art in heaven..."
+    },
+    {
+      "id": "hail_mary",
+      "text": "Hail Mary, full of grace..."
+    },
+    {
+      "id": "glory_be",
+      "text": "Glory be to the Father..."
+    },
+    {
+      "id": "fatima_prayer",
+      "text": "O my Jesus, forgive us our sins..."
+    }
+  ]
+}
