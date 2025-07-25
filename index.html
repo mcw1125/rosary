@@ -1,44 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Rosary PWA</title>
-  <link rel="manifest" href="manifest.json"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rosary Prayer</title>
   <style>
     body {
+      background-color: #111;
+      color: #f0f0f0;
       font-family: sans-serif;
-      padding:1rem;
-      line-height:1.6;
+      padding: 1em;
     }
-    #header {
-      text-align:center;
-      margin-bottom:1.5rem;
-      font-size:1.25rem;
-    }
-    /* Make each label a block so it starts on its own line */
-    label {
+    label.prayer, label.mystery {
       display: block;
-      margin: 0.75rem 0;
+      margin: 1em 0 0.5em;
+      font-size: 1rem;
+      line-height: 1.5;
     }
-    .mystery {
-      margin-top:1.5rem;
+    label.mystery {
+      font-size: 1.2rem;
+      font-weight: bold;
     }
     .description {
-      margin:0 0 1rem 1.5rem;
-      font-style:italic;
-      color:#555;
+      font-style: italic;
+      margin-bottom: 1em;
+    }
+    select {
+      margin-bottom: 1em;
+      font-size: 1rem;
     }
     hr {
-      margin:2rem 0;
-      border:none;
-      border-top:1px solid #ccc;
+      border: 0;
+      border-top: 1px solid #555;
+      margin: 2em 0;
     }
   </style>
 </head>
 <body>
-  <div id="header">Loading…</div>
+  <h2 id="header"></h2>
+  <label for="mysterySelect">Select Mysteries:</label>
+  <select id="mysterySelect">
+    <option value="auto">Auto (based on day)</option>
+    <option value="joyful">Joyful (Mon/Sat)</option>
+    <option value="sorrowful">Sorrowful (Tue/Fri)</option>
+    <option value="glorious">Glorious (Wed/Sun)</option>
+    <option value="luminous">Luminous (Thu)</option>
+  </select>
   <div id="app"></div>
-  <script src="app.js"></script>
+
+  <script>
+    const prayers = [
+      { id:"creed", text:"I believe in God, the Father almighty, Creator of heaven and earth..." },
+      { id:"our_father", text:"Our Father, who art in heaven..." },
+      { id:"hail_mary", text:"Hail Mary, full of grace..." },
+      { id:"glory_be", text:"Glory be to the Father..." },
+      { id:"fatima_prayer", text:"O my Jesus, forgive us our sins..." },
+      { id:"hail_holy_queen", text:"Hail, holy Queen, Mother of mercy..." },
+      { id:"final_prayer", text:"Let us pray. O God, whose only-begotten Son..." },
+      { id:"intro1", text:"3 Hail Marys: For Faith, Hope, and Charity." },
+      { id:"intro2", text:"Glory Be (before 1st mystery)." }
+    ];
+
+    const mysteriesData = {
+      joyful: [
+        { title:"The Annunciation", guidance:"Reflect on Mary’s courageous 'yes' to God’s plan despite uncertainty." },
+        { title:"The Visitation", guidance:"Consider Mary's service and how we might carry Christ to others." },
+        { title:"The Nativity", guidance:"Contemplate the humility of Christ born in a manger." },
+        { title:"The Presentation", guidance:"Think on Simeon's joy and prophecy of suffering and redemption." },
+        { title:"Finding in the Temple", guidance:"Meditate on seeking and finding Jesus in our own lives." }
+      ],
+      sorrowful: [
+        { title:"The Agony in the Garden", guidance:"Join Christ in His solitude and surrender in suffering." },
+        { title:"The Scourging at the Pillar", guidance:"Ponder the pain endured for our sins." },
+        { title:"The Crowning with Thorns", guidance:"Consider the ridicule Christ accepted for us." },
+        { title:"The Carrying of the Cross", guidance:"Walk alongside Jesus and carry your own crosses with Him." },
+        { title:"The Crucifixion", guidance:"Be still before the Cross and receive His love and mercy." }
+      ],
+      glorious: [
+        { title:"The Resurrection", guidance:"Rejoice! Death is conquered and hope is restored." },
+        { title:"The Ascension", guidance:"Jesus returns to the Father, opening heaven to us." },
+        { title:"Descent of the Holy Spirit", guidance:"Be filled with the Spirit's gifts and mission." },
+        { title:"The Assumption", guidance:"Celebrate Mary’s share in her Son’s triumph." },
+        { title:"The Coronation of Mary", guidance:"Honor the Queen of Heaven, our advocate and mother." }
+      ],
+      luminous: [
+        { title:"Baptism in the Jordan", guidance:"Jesus enters the waters to sanctify ours." },
+        { title:"Wedding at Cana", guidance:"Mary intercedes; Jesus reveals His glory." },
+        { title:"Proclamation of the Kingdom", guidance:"Hear the call to conversion and holiness." },
+        { title:"The Transfiguration", guidance:"See Jesus in glory and desire heaven." },
+        { title:"Institution of the Eucharist", guidance:"Christ gives Himself to us in love." }
+      ]
+    };
+
+    function getTodayMysteryKey() {
+      const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+      return (
+        day === 'Thursday' ? 'luminous' :
+        day === 'Tuesday' || day === 'Friday' ? 'sorrowful' :
+        day === 'Wednesday' || day === 'Sunday' ? 'glorious' :
+        'joyful'
+      );
+    }
+
+    function renderRosary(selectedKey) {
+      const day = new Date().toLocaleDateString('en-US',{weekday:'long'});
+      const mysteryKey = selectedKey === 'auto' ? getTodayMysteryKey() : selectedKey;
+      document.getElementById('header').textContent =
+        `Today is ${day} — ${mysteryKey.charAt(0).toUpperCase()+mysteryKey.slice(1)} Mysteries`;
+
+      const app = document.getElementById('app');
+      app.innerHTML = '';
+
+      [prayers[0], prayers[1], prayers[7], prayers[8]].forEach(p => {
+        const L = document.createElement('label');
+        L.className = 'prayer';
+        L.innerHTML = `<input type="checkbox"/> ${p.text}`;
+        app.appendChild(L);
+      });
+
+      mysteriesData[mysteryKey].forEach((m,i) => {
+        const M = document.createElement('label');
+        M.className = 'mystery';
+        M.innerHTML = `<input type="checkbox"/> ${m.title}`;
+        app.appendChild(M);
+        const D = document.createElement('div');
+        D.className = 'description';
+        D.textContent = m.guidance;
+        app.appendChild(D);
+
+        const OF = document.createElement('label');
+        OF.className = 'prayer';
+        OF.innerHTML = `<input type="checkbox"/> ${prayers.find(p => p.id === 'our_father').text}`;
+        app.appendChild(OF);
+
+        for (let j = 0; j < 10; j++) {
+          const HM = document.createElement('label');
+          HM.className = 'prayer';
+          HM.innerHTML = `<input type="checkbox"/> ${prayers.find(p => p.id === 'hail_mary').text}`;
+          app.appendChild(HM);
+        }
+
+        ['glory_be','fatima_prayer'].forEach(k => {
+          const P = document.createElement('label');
+          P.className = 'prayer';
+          P.innerHTML = `<input type="checkbox"/> ${prayers.find(p => p.id === k).text}`;
+          app.appendChild(P);
+        });
+
+        app.appendChild(document.createElement('hr'));
+      });
+
+      [prayers[5], prayers[6]].forEach(p => {
+        const L = document.createElement('label');
+        L.className = 'prayer';
+        L.innerHTML = `<input type="checkbox"/> ${p.text}`;
+        app.appendChild(L);
+      });
+    }
+
+    document.getElementById('mysterySelect').addEventListener('change', e => {
+      renderRosary(e.target.value);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => renderRosary('auto'));
+  </script>
 </body>
 </html>
