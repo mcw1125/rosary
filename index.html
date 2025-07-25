@@ -50,45 +50,45 @@
 
   <script>
     const prayers = [
-      { id:"creed", text:"I believe in God, the Father almighty, Creator of heaven and earth..." },
-      { id:"our_father", text:"Our Father, who art in heaven..." },
-      { id:"hail_mary", text:"Hail Mary, full of grace..." },
-      { id:"glory_be", text:"Glory be to the Father..." },
-      { id:"fatima_prayer", text:"O my Jesus, forgive us our sins..." },
-      { id:"hail_holy_queen", text:"Hail, holy Queen, Mother of mercy..." },
-      { id:"final_prayer", text:"Let us pray. O God, whose only-begotten Son..." },
-      { id:"intro1", text:"3 Hail Marys: For Faith, Hope, and Charity." },
-      { id:"intro2", text:"Glory Be (before 1st mystery)." }
+      { id: "creed", text: "I believe in God, the Father almighty, Creator of heaven and earth; and in Jesus Christ, his only Son our Lord; who was conceived by the Holy Spirit, born of the Virgin Mary; suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy Catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen." },
+      { id: "our_father", text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen." },
+      { id: "hail_mary", text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen." },
+      { id: "glory_be", text: "Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen." },
+      { id: "fatima_prayer", text: "O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of thy mercy. Amen." },
+      { id: "hail_holy_queen", text: "Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen." },
+      { id: "final_prayer", text: "Let us pray. O God, whose only-begotten Son, by his life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen." },
+      { id: "intro1", text: "3 Hail Marys: For Faith, Hope, and Charity." },
+      { id: "intro2", text: "Glory Be (before 1st mystery)." }
     ];
 
     const mysteriesData = {
       joyful: [
-        { title:"The Annunciation", guidance:"Reflect on Mary’s courageous 'yes' to God’s plan despite uncertainty." },
-        { title:"The Visitation", guidance:"Consider Mary's service and how we might carry Christ to others." },
-        { title:"The Nativity", guidance:"Contemplate the humility of Christ born in a manger." },
-        { title:"The Presentation", guidance:"Think on Simeon's joy and prophecy of suffering and redemption." },
-        { title:"Finding in the Temple", guidance:"Meditate on seeking and finding Jesus in our own lives." }
+        { title: "The Annunciation", guidance: "Reflect on the humility and obedience of Mary as she accepts God's will, and consider your own willingness to say 'yes' to God's plan for your life." },
+        { title: "The Visitation", guidance: "Meditate on Mary's journey to assist Elizabeth and how love moves us to serve others with joy and selflessness." },
+        { title: "The Nativity", guidance: "Contemplate the poverty and simplicity in which Christ chose to be born, and what that means for our values and trust in God's provision." },
+        { title: "The Presentation", guidance: "Reflect on the fulfillment of the law, the prophecy of Simeon, and how you present your life and loved ones to God." },
+        { title: "Finding in the Temple", guidance: "Meditate on Jesus' desire to be in His Father's house and ask for grace to seek Him always, even when He feels 'lost' in our lives." }
       ],
       sorrowful: [
-        { title:"The Agony in the Garden", guidance:"Join Christ in His solitude and surrender in suffering." },
-        { title:"The Scourging at the Pillar", guidance:"Ponder the pain endured for our sins." },
-        { title:"The Crowning with Thorns", guidance:"Consider the ridicule Christ accepted for us." },
-        { title:"The Carrying of the Cross", guidance:"Walk alongside Jesus and carry your own crosses with Him." },
-        { title:"The Crucifixion", guidance:"Be still before the Cross and receive His love and mercy." }
+        { title: "The Agony in the Garden", guidance: "Join Jesus in Gethsemane as He suffers alone. Reflect on accepting suffering with faith and submitting your will to God's." },
+        { title: "The Scourging at the Pillar", guidance: "Ponder the brutality inflicted upon Christ and the personal cost He bore for our redemption. Offer your own sufferings in union with His." },
+        { title: "The Crowning with Thorns", guidance: "Consider the ridicule Christ endured for claiming kingship. Reflect on how you bear mockery or shame for your faith." },
+        { title: "The Carrying of the Cross", guidance: "Meditate on Jesus' endurance and determination to save you. Ask for strength to carry your crosses with patience and grace." },
+        { title: "The Crucifixion", guidance: "Stand at the foot of the Cross and behold the depth of Jesus' love. Pray to unite your wounds and sins with His mercy." }
       ],
       glorious: [
-        { title:"The Resurrection", guidance:"Rejoice! Death is conquered and hope is restored." },
-        { title:"The Ascension", guidance:"Jesus returns to the Father, opening heaven to us." },
-        { title:"Descent of the Holy Spirit", guidance:"Be filled with the Spirit's gifts and mission." },
-        { title:"The Assumption", guidance:"Celebrate Mary’s share in her Son’s triumph." },
-        { title:"The Coronation of Mary", guidance:"Honor the Queen of Heaven, our advocate and mother." }
+        { title: "The Resurrection", guidance: "Rejoice in the risen Christ. Reflect on how His victory gives meaning to your trials and transforms your hope in eternal life." },
+        { title: "The Ascension", guidance: "Contemplate Christ's promise to prepare a place for you and to remain with you always through His Spirit." },
+        { title: "Descent of the Holy Spirit", guidance: "Meditate on the fire of the Spirit coming upon the apostles and ask to be filled with courage and zeal in your faith." },
+        { title: "The Assumption", guidance: "Ponder Mary's purity and reward in heaven. Ask for grace to live a holy life and be brought body and soul into God's glory." },
+        { title: "The Coronation of Mary", guidance: "Honor Mary as Queen of Heaven. Reflect on her intercession, her motherhood over the Church, and your place in God's kingdom." }
       ],
       luminous: [
-        { title:"Baptism in the Jordan", guidance:"Jesus enters the waters to sanctify ours." },
-        { title:"Wedding at Cana", guidance:"Mary intercedes; Jesus reveals His glory." },
-        { title:"Proclamation of the Kingdom", guidance:"Hear the call to conversion and holiness." },
-        { title:"The Transfiguration", guidance:"See Jesus in glory and desire heaven." },
-        { title:"Institution of the Eucharist", guidance:"Christ gives Himself to us in love." }
+        { title: "Baptism in the Jordan", guidance: "See Jesus submitting to baptism to identify with sinners. Contemplate your own baptismal identity and mission." },
+        { title: "Wedding at Cana", guidance: "Reflect on Jesus' first miracle at His Mother's request. Trust in Mary's intercession and God's power to transform the ordinary." },
+        { title: "Proclamation of the Kingdom", guidance: "Hear Christ's call to repent and believe. Ask how you can proclaim the Gospel in word and deed in your life." },
+        { title: "The Transfiguration", guidance: "Behold the divine glory of Christ revealed to strengthen the apostles' faith. Seek to see God's light in moments of darkness." },
+        { title: "Institution of the Eucharist", guidance: "Contemplate the gift of Jesus' Body and Blood. Ask for a deeper love and reverence for the Eucharist and the Mass." }
       ]
     };
 
