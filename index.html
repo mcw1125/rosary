@@ -34,7 +34,6 @@
       border-top: 1px solid #555;
       margin: 2em 0;
     }
-    /* Modal styles */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -69,16 +68,15 @@
   </style>
 </head>
 <body>
-  <!-- Meditation guidance popup -->
   <div id="meditationModal" class="modal-overlay">
     <div class="modal-content">
       <button class="modal-close" id="closeModal">&times;</button>
       <h3>How to meditate on the Mysteries</h3>
-      <p>As you pray each Hail Mary, focus on the Mystery, visualizing the scene and reflecting on its meaning. Let each bead draw you deeper:</p>
+      <p>As you pray each Hail Mary, focus on the Mystery, visualizing the scene and reflecting on its meaning:</p>
       <ul>
-        <li><strong>Visualize:</strong> Imagine yourself present at the event, noticing details.</li>
-        <li><strong>Reflect:</strong> Consider the emotions of Mary and Jesus, and what God reveals.</li>
-        <li><strong>Apply:</strong> Ask how this Mystery speaks to your life today and what virtue it inspires.</li>
+        <li><strong>Visualize:</strong> Imagine yourself present at the event.</li>
+        <li><strong>Reflect:</strong> Consider the emotions and message.</li>
+        <li><strong>Apply:</strong> Ask how this speaks to your life today.</li>
       </ul>
     </div>
   </div>
@@ -96,50 +94,108 @@
 
   <script>
     const prayers = [
-      { id: "creed", text: "I believe in God, the Father almighty...Amen." },
-      { id: "our_father", text: "Our Father, who art in heaven...Amen." },
-      { id: "hail_mary", text: "Hail Mary, full of grace...Amen." },
-      { id: "glory_be", text: "Glory be to the Father...world without end. Amen." },
-      { id: "fatima_prayer", text: "O my Jesus, forgive us our sins...Amen." },
-      { id: "hail_holy_queen", text: "Hail, holy Queen, Mother of mercy...Amen." },
-      { id: "final_prayer", text: "Let us pray...through the same Christ our Lord. Amen." },
+      { id: "creed", text: "I believe in God, the Father almighty... Amen." },
+      { id: "our_father", text: "Our Father, who art in heaven... Amen." },
+      { id: "hail_mary", text: "Hail Mary, full of grace... Amen." },
+      { id: "glory_be", text: "Glory be to the Father... world without end. Amen." },
+      { id: "fatima_prayer", text: "O my Jesus, forgive us our sins... Amen." },
+      { id: "hail_holy_queen", text: "Hail, holy Queen... Amen." },
+      { id: "final_prayer", text: "Let us pray... through the same Christ our Lord. Amen." },
       { id: "intro1", text: "3 Hail Marys: For Faith, Hope, and Charity." },
       { id: "intro2", text: "Glory Be (before 1st mystery)." }
     ];
 
-    const mysteriesData = { /* same detailed mysteriesData object as before */ };
+    const mysteriesData = {
+      joyful: [
+        { title: "The Annunciation", guidance: "Event: Gabriel greets Mary in Nazareth. Reflection: Embrace God's call with humility and trust." },
+        { title: "The Visitation", guidance: "Event: Mary visits Elizabeth. Reflection: Bring Christ to others through joyful service." },
+        { title: "The Nativity", guidance: "Event: Jesus born in a stable. Reflection: Welcome Jesus into your simple, everyday moments." },
+        { title: "The Presentation", guidance: "Event: Jesus presented in the Temple. Reflection: Offer your gifts back to God with trust." },
+        { title: "Finding in the Temple", guidance: "Event: Jesus teaching at age 12. Reflection: Seek Christ first through prayer and scripture." }
+      ],
+      sorrowful: [
+        { title: "The Agony in the Garden", guidance: "Event: Jesus prays in Gethsemane. Reflection: Surrender your worries in trust." },
+        { title: "The Scourging", guidance: "Event: Jesus is whipped. Reflection: Unite your suffering with His redemptive love." },
+        { title: "Crowning with Thorns", guidance: "Event: Jesus mocked with thorns. Reflection: Embrace humility amid pain." },
+        { title: "Carrying of the Cross", guidance: "Event: Jesus bears the cross. Reflection: Offer your daily crosses in His strength." },
+        { title: "The Crucifixion", guidance: "Event: Jesus dies on the cross. Reflection: Lay your sins at His feet and receive mercy." }
+      ],
+      glorious: [
+        { title: "The Resurrection", guidance: "Event: Christ rises on the third day. Reflection: Live in the hope of new life." },
+        { title: "The Ascension", guidance: "Event: Jesus ascends to heaven. Reflection: Trust His ongoing presence and intercession." },
+        { title: "Descent of the Holy Spirit", guidance: "Event: Spirit empowers apostles. Reflection: Invite the Spirit for courage and wisdom." },
+        { title: "The Assumption", guidance: "Event: Mary assumed into heaven. Reflection: Aspire to purity and heavenly virtues." },
+        { title: "Coronation of Mary", guidance: "Event: Mary crowned Queen. Reflection: Seek her maternal guidance and intercession." }
+      ],
+      luminous: [
+        { title: "Baptism in the Jordan", guidance: "Event: Jesus baptized by John. Reflection: Renew your baptismal identity as God's beloved." },
+        { title: "Wedding at Cana", guidance: "Event: Jesus' first miracle. Reflection: Trust in Mary's intercession for transformation." },
+        { title: "Proclamation of the Kingdom", guidance: "Event: Jesus proclaims God's reign. Reflection: Embrace Gospel values of mercy and justice." },
+        { title: "The Transfiguration", guidance: "Event: Jesus revealed in glory. Reflection: Seek to behold God's light in trials." },
+        { title: "Institution of the Eucharist", guidance: "Event: Last Supper gift of Communion. Reflection: Deepen your love for the Eucharist." }
+      ]
+    };
 
     function getTodayMysteryKey() {
       const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-      return (
-        day === 'Thursday' ? 'luminous' :
-        day === 'Tuesday' || day === 'Friday' ? 'sorrowful' :
-        day === 'Wednesday' || day === 'Sunday' ? 'glorious' :
-        'joyful'
-      );
+      if (day === 'Thursday') return 'luminous';
+      if (day === 'Tuesday' || day === 'Friday') return 'sorrowful';
+      if (day === 'Wednesday' || day === 'Sunday') return 'glorious';
+      return 'joyful';
     }
 
-    function renderRosary(selectedKey) {
-      const dayName = new Date().toLocaleDateString('en-US',{weekday:'long'});
-      const mysteryKey = selectedKey === 'auto' ? getTodayMysteryKey() : selectedKey;
-      document.getElementById('header').textContent =
-        `Today is ${dayName} — ${mysteryKey.charAt(0).toUpperCase()+mysteryKey.slice(1)} Mysteries`;
-
+    function renderRosary(key) {
+      const mysteryKey = key === 'auto' ? getTodayMysteryKey() : key;
+      const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+      document.getElementById('header').textContent = `Today is ${day} — ${mysteryKey.charAt(0).toUpperCase()+mysteryKey.slice(1)} Mysteries`;
       const app = document.getElementById('app');
       app.innerHTML = '';
-
-      /* Render prayers and mysteries as before */
+      [prayers[0], prayers[1], prayers[7], prayers[8]].forEach(p => {
+        const l = document.createElement('label');
+        l.className = 'prayer';
+        l.innerHTML = `<input type="checkbox"/> ${p.text}`;
+        app.appendChild(l);
+      });
+      mysteriesData[mysteryKey].forEach(m => {
+        const mLabel = document.createElement('label');
+        mLabel.className = 'mystery';
+        mLabel.innerHTML = `<input type="checkbox"/> ${m.title}`;
+        app.appendChild(mLabel);
+        const desc = document.createElement('div');
+        desc.className = 'description';
+        desc.textContent = m.guidance;
+        app.appendChild(desc);
+        const of = document.createElement('label');
+        of.className = 'prayer';
+        of.innerHTML = `<input type="checkbox"/> ${prayers.find(p=>p.id==='our_father').text}`;
+        app.appendChild(of);
+        for (let i=0; i<10; i++) {
+          const hm = document.createElement('label');
+          hm.className = 'prayer';
+          hm.innerHTML = `<input type="checkbox"/> ${prayers.find(p=>p.id==='hail_mary').text}`;
+          app.appendChild(hm);
+        }
+        ['glory_be','fatima_prayer'].forEach(id => {
+          const pr = prayers.find(p=>p.id===id);
+          const pl = document.createElement('label');
+          pl.className = 'prayer';
+          pl.innerHTML = `<input type="checkbox"/> ${pr.text}`;
+          app.appendChild(pl);
+        });
+        app.appendChild(document.createElement('hr'));
+      });
+      [prayers[5], prayers[6]].forEach(p => {
+        const fl = document.createElement('label');
+        fl.className = 'prayer';
+        fl.innerHTML = `<input type="checkbox"/> ${p.text}`;
+        app.appendChild(fl);
+      });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('meditationModal');
-      const closeBtn = document.getElementById('closeModal');
-      // Close on X click
-      closeBtn.addEventListener('click', () => modal.style.display = 'none');
-      // Close on background click
-      modal.addEventListener('click', e => {
-        if (e.target === modal) modal.style.display = 'none';
-      });
+      document.getElementById('closeModal').addEventListener('click', () => modal.style.display='none');
+      modal.addEventListener('click', e => { if (e.target===modal) modal.style.display='none'; });
       document.getElementById('mysterySelect').addEventListener('change', e => renderRosary(e.target.value));
       renderRosary('auto');
     });
