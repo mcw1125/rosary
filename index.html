@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rosary Prayer</title>
-  <style>
+  <title>Rosary Prayer</n  <style>
     body {
       background-color: #111;
       color: #f0f0f0;
@@ -107,32 +106,92 @@
 
     const mysteriesData = {
       joyful: [
-        { title: "The Annunciation", guidance: "Event: Gabriel greets Mary in Nazareth. Reflection: Embrace God's call with humility and trust." },
-        { title: "The Visitation", guidance: "Event: Mary visits Elizabeth. Reflection: Bring Christ to others through joyful service." },
-        { title: "The Nativity", guidance: "Event: Jesus born in a stable. Reflection: Welcome Jesus into your simple, everyday moments." },
-        { title: "The Presentation", guidance: "Event: Jesus presented in the Temple. Reflection: Offer your gifts back to God with trust." },
-        { title: "Finding in the Temple", guidance: "Event: Jesus teaching at age 12. Reflection: Seek Christ first through prayer and scripture." }
+        {
+          title: "The Annunciation",
+          guidance: "Event: In Nazareth, the Angel Gabriel appears to Mary to announce that she will conceive and bear the Son of God.\nDetails: Picture Gabriel’s radiant presence, Mary’s gentle obedience, and her words, 'Be it done unto me according to thy word.'\nMeditation: Ask for the grace to respond to God’s invitations with the same humility and trust.\nAsk: 'Am I open to saying Yes to God even when it changes my life dramatically?'"
+        },
+        {
+          title: "The Visitation",
+          guidance: "Event: Mary travels to the hill country to visit her cousin Elizabeth.\nDetails: Hear Elizabeth’s joyful greeting, 'Blessed are you among women,' and feel Mary’s song of praise as she proclaims God’s greatness.\nMeditation: Reflect on how sharing Christ brings joy to others.\nAsk: 'How can I bring the presence of Jesus to someone in need today?'"
+        },
+        {
+          title: "The Nativity",
+          guidance: "Event: Jesus is born in Bethlehem and laid in a manger.\nDetails: Imagine the cold night air, the smell of hay, the glow of a single lantern, and the adoration of shepherds.\nMeditation: Contemplate God’s humility in choosing a stable over a palace.\nAsk: 'Where can I embrace simplicity and welcome Jesus into my everyday life?'"
+        },
+        {
+          title: "The Presentation",
+          guidance: "Event: Mary and Joseph bring Jesus to the Temple in Jerusalem to present him to the Lord.\nDetails: Marvel at Simeon’s prophecy, calling Jesus 'a light to enlighten the Gentiles.'\nMeditation: Offer your own gifts and family to God with full trust.\nAsk: 'What gifts do I need to place back into God’s hands today?'"
+        },
+        {
+          title: "Finding in the Temple",
+          guidance: "Event: After searching for three days, Mary and Joseph find the twelve-year-old Jesus teaching in the Temple.\nDetails: See Jesus among the teachers, amazed by his understanding and his answers.\nMeditation: Seek Christ first, abandoning distractions.\nAsk: 'Am I searching for Jesus in prayer and Scripture as Mary did?'"
+        }
       ],
       sorrowful: [
-        { title: "The Agony in the Garden", guidance: "Event: Jesus prays in Gethsemane. Reflection: Surrender your worries in trust." },
-        { title: "The Scourging", guidance: "Event: Jesus is whipped. Reflection: Unite your suffering with His redemptive love." },
-        { title: "Crowning with Thorns", guidance: "Event: Jesus mocked with thorns. Reflection: Embrace humility amid pain." },
-        { title: "Carrying of the Cross", guidance: "Event: Jesus bears the cross. Reflection: Offer your daily crosses in His strength." },
-        { title: "The Crucifixion", guidance: "Event: Jesus dies on the cross. Reflection: Lay your sins at His feet and receive mercy." }
+        {
+          title: "The Agony in the Garden",
+          guidance: "Event: In the Garden of Gethsemane, Jesus prays in deep anguish.\nDetails: Feel his sorrow as he sweats blood, begging the Father, 'Not my will, but yours be done.'\nMeditation: Bring your own anxieties and fears to Jesus in prayer.\nAsk: 'How can I trust God’s plan for my life amid my fears?'"
+        },
+        {
+          title: "The Scourging at the Pillar",
+          guidance: "Event: Jesus is tied to a pillar and brutally scourged.\nDetails: Contemplate each lash and the depths of his love expressed through suffering.\nMeditation: Unite your own pains, physical or emotional, with Christ’s sacrifice.\nAsk: 'How can my trials become prayers for others?'"
+        },
+        {
+          title: "The Crowning with Thorns",
+          guidance: "Event: Soldiers mock Jesus, placing a crown of thorns on his head and a purple robe.\nDetails: Hear the jeers as they hail him 'King of the Jews,' and see the blood trickling down.\nMeditation: Embrace humility and forgiveness, even when wounded by others.\nAsk: 'Who do I need to forgive, and how can I show humility?'"
+        },
+        {
+          title: "The Carrying of the Cross",
+          guidance: "Event: Jesus carries the heavy cross through the streets of Jerusalem to Calvary.\nDetails: Watch him stumble under its weight and feel the compassion of those who follow.\nMeditation: Offer your daily burdens in union with his.\nAsk: 'What crosses am I carrying, and how can I unite them with Christ’s?'"
+        },
+        {
+          title: "The Crucifixion",
+          guidance: "Event: Jesus is nailed to the cross and breathes his last, offering salvation to the world.\nDetails: Stand at the foot of the cross, witnessing his outstretched arms and hear his last words.\nMeditation: Lay your sins and regrets at his feet, confident in his mercy.\nAsk: 'What sins do I need to entrust to Jesus for forgiveness?'
+        }
       ],
       glorious: [
-        { title: "The Resurrection", guidance: "Event: Christ rises on the third day. Reflection: Live in the hope of new life." },
-        { title: "The Ascension", guidance: "Event: Jesus ascends to heaven. Reflection: Trust His ongoing presence and intercession." },
-        { title: "Descent of the Holy Spirit", guidance: "Event: Spirit empowers apostles. Reflection: Invite the Spirit for courage and wisdom." },
-        { title: "The Assumption", guidance: "Event: Mary assumed into heaven. Reflection: Aspire to purity and heavenly virtues." },
-        { title: "Coronation of Mary", guidance: "Event: Mary crowned Queen. Reflection: Seek her maternal guidance and intercession." }
+        {
+          title: "The Resurrection",
+          guidance: "Event: On the third day, Jesus rises triumphantly from the tomb.\nDetails: Envision the empty tomb, the angelic guards, and Mary Magdalene discovering the miracle.\nMeditation: Embrace the new life Christ offers you in every situation.\nAsk: 'Where do I need resurrection and hope in my life?'"
+        },
+        {
+          title: "The Ascension",
+          guidance: "Event: Forty days after Easter, Jesus ascends into heaven before his disciples.\nDetails: Watch him rise into the clouds as the apostles gaze upward in awe.\nMeditation: Trust in his ongoing presence and intercession.\nAsk: 'How do I experience Christ’s presence and guidance today?'"
+        },
+        {
+          title: "Descent of the Holy Spirit",
+          guidance: "Event: At Pentecost, tongues of fire rest on the disciples, filling them with the Holy Spirit.\nDetails: Feel the power and courage that transformed fearful men into bold witnesses.\nMeditation: Invite the Holy Spirit to empower your faith and mission.\nAsk: 'What gifts of the Spirit do I need for my journey?'"
+        },
+        {
+          title: "The Assumption",
+          guidance: "Event: At the end of her earthly life, Mary is assumed body and soul into heaven.\nDetails: Picture the angels welcoming her and the glory that surrounds her.\nMeditation: Aspire to purity and complete trust in God’s promises.\nAsk: 'How can I grow in holiness and devotion like Mary?'"
+        },
+        {
+          title: "The Coronation of Mary",
+          guidance: "Event: In heaven, Mary is crowned Queen of Heaven and Earth by the Holy Trinity.\nDetails: Marvel at her motherly care and authority, interceding for all.\nMeditation: Seek her maternal guidance and protection.\nAsk: 'How can I entrust my life and needs to Mary’s intercession?'
+        }
       ],
       luminous: [
-        { title: "Baptism in the Jordan", guidance: "Event: Jesus baptized by John. Reflection: Renew your baptismal identity as God's beloved." },
-        { title: "Wedding at Cana", guidance: "Event: Jesus' first miracle. Reflection: Trust in Mary's intercession for transformation." },
-        { title: "Proclamation of the Kingdom", guidance: "Event: Jesus proclaims God's reign. Reflection: Embrace Gospel values of mercy and justice." },
-        { title: "The Transfiguration", guidance: "Event: Jesus revealed in glory. Reflection: Seek to behold God's light in trials." },
-        { title: "Institution of the Eucharist", guidance: "Event: Last Supper gift of Communion. Reflection: Deepen your love for the Eucharist." }
+        {
+          title: "Baptism in the Jordan",
+          guidance: "Event: Jesus is baptized by John the Baptist in the River Jordan.\nDetails: Hear the heavens open and God’s voice proclaim, 'You are my beloved Son.'\nMeditation: Renew your own baptismal promises and identity as God’s child.\nAsk: 'Am I living as a beloved child of God each day?'"
+        },
+        {
+          title: "Wedding at Cana",
+          guidance: "Event: At a wedding feast, Mary intercedes, and Jesus turns water into wine.\nDetails: Picture jars filling with fine wine, symbolizing transformation and abundance.\nMeditation: Trust in Mary’s intercession and Christ’s power to transform your life.\nAsk: 'Where do I need Jesus’ miraculous change today?'
+        },
+        {
+          title: "Proclamation of the Kingdom",
+          guidance: "Event: Jesus begins his public ministry, proclaiming 'Repent, for the Kingdom of Heaven is at hand.'\nDetails: Hear his call to righteousness and see people respond in faith.\nMeditation: Embrace gospel values of mercy, justice, and love.\nAsk: 'What barriers keep me from fully accepting God’s reign?'
+        },
+        {
+          title: "The Transfiguration",
+          guidance: "Event: On Mount Tabor, Jesus is transfigured, his face shining like the sun.\nDetails: Behold Moses and Elijah appearing beside him and hear the Father's voice, 'This is my beloved Son.'\nMeditation: Seek moments of divine clarity and listen for God’s voice.\nAsk: 'How can I recognize God’s glory in my life’s trials?'
+        },
+        {
+          title: "Institution of the Eucharist",
+          guidance: "Event: During the Last Supper, Jesus offers bread and wine as his Body and Blood.\nDetails: Focus on the humble elements becoming his sacred presence.\nMeditation: Deepen your desire and preparation for receiving Communion.\nAsk: 'How can I open my heart more fully to Christ in the Eucharist?'
+        }
       ]
     };
 
