@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rosary Prayer</n  <style>
+  <title>Rosary Prayer</title>
+  <style>
     body {
       background-color: #111;
       color: #f0f0f0;
@@ -146,7 +147,7 @@
         },
         {
           title: "The Crucifixion",
-          guidance: "Event: Jesus is nailed to the cross and breathes his last, offering salvation to the world.\nDetails: Stand at the foot of the cross, witnessing his outstretched arms and hear his last words.\nMeditation: Lay your sins and regrets at his feet, confident in his mercy.\nAsk: 'What sins do I need to entrust to Jesus for forgiveness?'
+          guidance: "Event: Jesus is nailed to the cross and breathes his last, offering salvation to the world.\nDetails: Stand at the foot of the cross, witnessing his outstretched arms and hear his last words.\nMeditation: Lay your sins and regrets at his feet, confident in his mercy.\nAsk: 'What sins do I need to entrust to Jesus for forgiveness?'"
         }
       ],
       glorious: [
@@ -163,101 +164,4 @@
           guidance: "Event: At Pentecost, tongues of fire rest on the disciples, filling them with the Holy Spirit.\nDetails: Feel the power and courage that transformed fearful men into bold witnesses.\nMeditation: Invite the Holy Spirit to empower your faith and mission.\nAsk: 'What gifts of the Spirit do I need for my journey?'"
         },
         {
-          title: "The Assumption",
-          guidance: "Event: At the end of her earthly life, Mary is assumed body and soul into heaven.\nDetails: Picture the angels welcoming her and the glory that surrounds her.\nMeditation: Aspire to purity and complete trust in God’s promises.\nAsk: 'How can I grow in holiness and devotion like Mary?'"
-        },
-        {
-          title: "The Coronation of Mary",
-          guidance: "Event: In heaven, Mary is crowned Queen of Heaven and Earth by the Holy Trinity.\nDetails: Marvel at her motherly care and authority, interceding for all.\nMeditation: Seek her maternal guidance and protection.\nAsk: 'How can I entrust my life and needs to Mary’s intercession?'
-        }
-      ],
-      luminous: [
-        {
-          title: "Baptism in the Jordan",
-          guidance: "Event: Jesus is baptized by John the Baptist in the River Jordan.\nDetails: Hear the heavens open and God’s voice proclaim, 'You are my beloved Son.'\nMeditation: Renew your own baptismal promises and identity as God’s child.\nAsk: 'Am I living as a beloved child of God each day?'"
-        },
-        {
-          title: "Wedding at Cana",
-          guidance: "Event: At a wedding feast, Mary intercedes, and Jesus turns water into wine.\nDetails: Picture jars filling with fine wine, symbolizing transformation and abundance.\nMeditation: Trust in Mary’s intercession and Christ’s power to transform your life.\nAsk: 'Where do I need Jesus’ miraculous change today?'
-        },
-        {
-          title: "Proclamation of the Kingdom",
-          guidance: "Event: Jesus begins his public ministry, proclaiming 'Repent, for the Kingdom of Heaven is at hand.'\nDetails: Hear his call to righteousness and see people respond in faith.\nMeditation: Embrace gospel values of mercy, justice, and love.\nAsk: 'What barriers keep me from fully accepting God’s reign?'
-        },
-        {
-          title: "The Transfiguration",
-          guidance: "Event: On Mount Tabor, Jesus is transfigured, his face shining like the sun.\nDetails: Behold Moses and Elijah appearing beside him and hear the Father's voice, 'This is my beloved Son.'\nMeditation: Seek moments of divine clarity and listen for God’s voice.\nAsk: 'How can I recognize God’s glory in my life’s trials?'
-        },
-        {
-          title: "Institution of the Eucharist",
-          guidance: "Event: During the Last Supper, Jesus offers bread and wine as his Body and Blood.\nDetails: Focus on the humble elements becoming his sacred presence.\nMeditation: Deepen your desire and preparation for receiving Communion.\nAsk: 'How can I open my heart more fully to Christ in the Eucharist?'
-        }
-      ]
-    };
-
-    function getTodayMysteryKey() {
-      const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-      if (day === 'Thursday') return 'luminous';
-      if (day === 'Tuesday' || day === 'Friday') return 'sorrowful';
-      if (day === 'Wednesday' || day === 'Sunday') return 'glorious';
-      return 'joyful';
-    }
-
-    function renderRosary(key) {
-      const mysteryKey = key === 'auto' ? getTodayMysteryKey() : key;
-      const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-      document.getElementById('header').textContent = `Today is ${day} — ${mysteryKey.charAt(0).toUpperCase()+mysteryKey.slice(1)} Mysteries`;
-      const app = document.getElementById('app');
-      app.innerHTML = '';
-      [prayers[0], prayers[1], prayers[7], prayers[8]].forEach(p => {
-        const l = document.createElement('label');
-        l.className = 'prayer';
-        l.innerHTML = `<input type="checkbox"/> ${p.text}`;
-        app.appendChild(l);
-      });
-      mysteriesData[mysteryKey].forEach(m => {
-        const mLabel = document.createElement('label');
-        mLabel.className = 'mystery';
-        mLabel.innerHTML = `<input type="checkbox"/> ${m.title}`;
-        app.appendChild(mLabel);
-        const desc = document.createElement('div');
-        desc.className = 'description';
-        desc.textContent = m.guidance;
-        app.appendChild(desc);
-        const of = document.createElement('label');
-        of.className = 'prayer';
-        of.innerHTML = `<input type="checkbox"/> ${prayers.find(p=>p.id==='our_father').text}`;
-        app.appendChild(of);
-        for (let i=0; i<10; i++) {
-          const hm = document.createElement('label');
-          hm.className = 'prayer';
-          hm.innerHTML = `<input type="checkbox"/> ${prayers.find(p=>p.id==='hail_mary').text}`;
-          app.appendChild(hm);
-        }
-        ['glory_be','fatima_prayer'].forEach(id => {
-          const pr = prayers.find(p=>p.id===id);
-          const pl = document.createElement('label');
-          pl.className = 'prayer';
-          pl.innerHTML = `<input type="checkbox"/> ${pr.text}`;
-          app.appendChild(pl);
-        });
-        app.appendChild(document.createElement('hr'));
-      });
-      [prayers[5], prayers[6]].forEach(p => {
-        const fl = document.createElement('label');
-        fl.className = 'prayer';
-        fl.innerHTML = `<input type="checkbox"/> ${p.text}`;
-        app.appendChild(fl);
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('meditationModal');
-      document.getElementById('closeModal').addEventListener('click', () => modal.style.display='none');
-      modal.addEventListener('click', e => { if (e.target===modal) modal.style.display='none'; });
-      document.getElementById('mysterySelect').addEventListener('change', e => renderRosary(e.target.value));
-      renderRosary('auto');
-    });
-  </script>
-</body>
-</html>
+          title
