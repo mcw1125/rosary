@@ -5,68 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rosary Prayer</title>
   <style>
-    body {
-      background-color: #111;
-      color: #f0f0f0;
-      font-family: sans-serif;
-      padding: 1em;
-      margin: 0;
-    }
-    label.prayer, label.mystery {
-      display: block;
-      margin: 1em 0 0.5em;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-    label.mystery {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 2em;
-    }
-    .description {
-      font-style: italic;
-      margin-left: 1em;
-      margin-bottom: 1em;
-    }
-    select {
-      margin-bottom: 1em;
-      font-size: 1rem;
-    }
-    hr {
-      border: 0;
-      border-top: 1px solid #555;
-      margin: 2em 0;
-    }
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background-color: #222;
-      color: #f0f0f0;
-      padding: 1.5em;
-      border-radius: 8px;
-      max-width: 600px;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 0.5em;
-      right: 0.5em;
-      font-size: 1.5rem;
-      background: none;
-      border: none;
-      color: #f0f0f0;
-      cursor: pointer;
-    }
+    body { background-color: #111; color: #f0f0f0; font-family: sans-serif; padding: 1em; margin: 0; }
+    label.prayer, label.mystery { display: block; margin: 1em 0 0.5em; font-size: 1rem; line-height: 1.5; }
+    label.mystery { font-size: 1.2rem; font-weight: bold; margin-top: 2em; }
+    .description { font-style: italic; margin-left: 1em; margin-bottom: 1em; white-space: pre-wrap; }
+    select { margin-bottom: 1em; font-size: 1rem; }
+    hr { border: 0; border-top: 1px solid #555; margin: 2em 0; }
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:1000; }
+    .modal-content { background-color:#222; color:#f0f0f0; padding:1.5em; border-radius:8px; max-width:600px; position:relative; }
+    .modal-close { position:absolute; top:0.5em; right:0.5em; font-size:1.5rem; background:none; border:none; color:#f0f0f0; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -74,12 +21,11 @@
     <div class="modal-content">
       <button id="closeModal" class="modal-close">&times;</button>
       <h3>How to meditate on the Mysteries</h3>
-      <p>As you pray each <em>Hail Mary</em>, focus deeply on the Mystery:
       <ul>
         <li><strong>Visualize:</strong> Place yourself in the scene, noticing sights, sounds, and feelings.</li>
         <li><strong>Reflect:</strong> Consider the significance of the event and God’s love revealed.</li>
         <li><strong>Apply:</strong> Ask how this Mystery calls you to grow in faith and virtue.</li>
-      </ul></p>
+      </ul>
     </div>
   </div>
 
@@ -102,49 +48,39 @@
       { id: 'glory_be', text: `Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen.` },
       { id: 'fatima_prayer', text: `O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of thy mercy. Amen.` },
       { id: 'hail_holy_queen', text: `Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen.` },
-      { id: 'final_prayer', text: `Let us pray. O God, whose only-begotten Son, by his life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen.` }
+      { id: 'final_prayer', text: `Let us pray. O God, whose only-begotten Son, by his life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen.` },
+      { id: 'intro1', text: `3 Hail Marys: For Faith, Hope, and Charity.` },
+      { id: 'intro2', text: `Glory Be: Before the First Mystery.` }
     ];
 
     const mysteriesData = {
       joyful: [
-        { title: 'The Annunciation', guidance: `Event: Gabriel greets Mary in Nazareth; she is chosen to bear God’s Son.\
-Details: Picture the angel’s greeting, Mary’s humble acceptance, and her words, "Be it done unto me."\
-Meditation: Seek the grace to hear and answer God’s call with trust.` },
-        { title: 'The Visitation', guidance: `Event: Mary visits Elizabeth in Judea.\
-Details: Feel Elizabeth’s joy-filled blessing and Mary’s song of praise (Magnificat).\
-Meditation: Reflect on the joy of serving others in faith.` },
-        { title: 'The Nativity', guidance: `Event: Jesus is born in Bethlehem and laid in a manger.\
-Details: Imagine the stable’s humility, the shepherds’ wonder, and the angels’ song.\
-Meditation: Embrace simplicity and recognize God with us.` },
-        { title: 'The Presentation', guidance: `Event: Mary and Joseph present Jesus in the Temple.\
-Details: Marvel at Simeon’s prophecy and Anna’s praise.\
-Meditation: Offer your life in obedience to God’s plan.` },
-        { title: 'Finding in the Temple', guidance: `Event: Twelve-year-old Jesus stays behind teaching in the Temple.\
-Details: Observe his wisdom and Mary’s concern.\
-Meditation: Prioritize seeking Christ in prayer and Scripture.` }
+        { title: 'The Annunciation', guidance: `Event: In Nazareth, the Angel Gabriel proclaims Mary as Mother of the Savior.\nDetails: See Gabriel's radiance, hear his greeting 'Hail, full of grace,' and feel Mary's quiet 'Yes.'\nMeditation: Ask for openness to God's will in your life.` },
+        { title: 'The Visitation', guidance: `Event: Mary visits her cousin Elizabeth in the hill country.\nDetails: Feel Elizabeth's joy-filled embrace and hear Mary's Magnificat song of praise.\nMeditation: Reflect on serving others with a joyful heart.` },
+        { title: 'The Nativity', guidance: `Event: Jesus is born in Bethlehem, wrapped in swaddling clothes.\nDetails: Picture the humble stable, the squirming infant, the shepherds' wonder, and the angels' Gloria.\nMeditation: Welcome simplicity and God's presence in the ordinary.` },
+        { title: 'The Presentation', guidance: `Event: Mary and Joseph offer Jesus in the Temple.\nDetails: Witness Simeon's prophetic praise and Anna's thanksgiving.\nMeditation: Offer your own gifts and family back to God with trust.` },
+        { title: 'The Finding in the Temple', guidance: `Event: Twelve-year-old Jesus teaches the elders in the Temple.\nDetails: Observe his wisdom and Mary's anxious relief upon finding him.\nMeditation: Prioritize seeking Christ in prayer and Scripture.` }
       ],
       sorrowful: [
-        { title: 'The Agony in the Garden', guidance: `Event: Jesus prays in Gethsemane in deep sorrow.\
-Details: Feel his anguish and hear, "Not my will, but yours."\
-Meditation: Offer your worries to God.` },
-        { title: 'The Scourging at the Pillar', guidance: `Event: Jesus is whipped for our sins.\
-Details: Contemplate each painful lash.\
-Meditation: Unite your sufferings with his.` },
-        { title: 'The Crowning with Thorns', guidance: `Event: Soldiers mock Jesus with thorns.\
-Details: See the blood and hear the jeers.\
-Meditation: Embrace humility and forgiveness.` },
-        { title: 'The Carrying of the Cross', guidance: `Event: Jesus carries his cross to Calvary.\
-Details: Feel its weight and Simon’s help.\
-Meditation: Offer daily crosses with patience.` },
-        { title: 'The Crucifixion', guidance: `Event: Jesus is nailed to the cross and dies.<\p>
-Details: Stand at the foot of the cross in awe.\
-Meditation: Lay your sins at his feet in trust.` }
+        { title: 'The Agony in the Garden', guidance: `Event: Jesus prays in Gethsemane in deep sorrow.\nDetails: Feel his dread, sweat of blood, and hear 'Not my will, but yours.'\nMeditation: Bring your anxieties to Jesus and trust his plan.` },
+        { title: 'The Scourging at the Pillar', guidance: `Event: Jesus is mercilessly whipped.\nDetails: Contemplate each lash and his patient love.\nMeditation: Unite your own trials with his suffering for healing.` },
+        { title: 'The Crowning with Thorns', guidance: `Event: Soldiers mock Jesus, placing a thorny crown.\nDetails: Hear their jeers and see his blood.\nMeditation: Embrace humility and forgive those who wound you.` },
+        { title: 'The Carrying of the Cross', guidance: `Event: Jesus bears his heavy cross to Calvary.\nDetails: Feel its weight and Simon's reluctant help.\nMeditation: Offer your daily burdens in unity with him.` },
+        { title: 'The Crucifixion', guidance: `Event: Jesus is nailed to the cross and breathes his last.\nDetails: Stand at the foot of the cross, hearing his final 'Father, into your hands...'.\nMeditation: Lay your sins and regrets at his feet for mercy.` }
       ],
       glorious: [
-        /* Expand similarly, omitted for brevity here */
+        { title: 'The Resurrection', guidance: `Event: Christ rises triumphant on the third day.\nDetails: Imagine the empty tomb and the angel's 'He is not here.'\nMeditation: Embrace new life and hope in Christ.` },
+        { title: 'The Ascension', guidance: `Event: Jesus ascends into heaven before his disciples.\nDetails: Watch him lift into clouds as they gaze upward.\nMeditation: Trust his presence and promise of return.` },
+        { title: 'The Descent of the Holy Spirit', guidance: `Event: Tongues of fire rest on the apostles at Pentecost.\nDetails: Feel their empowerment and bold proclamation.\nMeditation: Invite the Spirit’s gifts into your life.` },
+        { title: 'The Assumption', guidance: `Event: Mary is assumed body and soul into heaven.\nDetails: Envision angels welcoming her to glory.\nMeditation: Aspire to purity and trust in God’s promises.` },
+        { title: 'The Coronation of Mary', guidance: `Event: Mary is crowned Queen of Heaven.\nDetails: Marvel at her maternal reign and care for souls.\nMeditation: Seek her loving intercession.` }
       ],
       luminous: [
-        /* Expand similarly */
+        { title: 'The Baptism of Jesus', guidance: `Event: Jesus is baptized by John in the Jordan.\nDetails: Hear the Father’s voice, 'This is my beloved Son.'\nMeditation: Renew your baptismal promises as God’s child.` },
+        { title: 'The Wedding at Cana', guidance: `Event: Jesus turns water into wine at Mary’s request.\nDetails: See jars fill with fine wine, signifying transformation.\nMeditation: Trust in Mary’s intercession for miracles.` },
+        { title: 'The Proclamation of the Kingdom', guidance: `Event: Jesus proclaims, 'Repent, the Kingdom is at hand.'\nDetails: Hear his call to conversion and mercy.\nMeditation: Embrace Gospel values in your life.` },
+        { title: 'The Transfiguration', guidance: `Event: Jesus is transfigured in radiant glory.\nDetails: Behold his shining face and hear 'Listen to him.'\nMeditation: Seek moments of divine clarity in trials.` },
+        { title: 'The Institution of the Eucharist', guidance: `Event: At the Last Supper, Jesus offers his Body and Blood.\nDetails: Focus on the bread and wine as his presence.\nMeditation: Deepen your love and preparation for Communion.` }
       ]
     };
 
@@ -160,38 +96,41 @@ Meditation: Lay your sins at his feet in trust.` }
       const mysteryKey = key === 'auto' ? getTodayMysteryKey() : key;
       const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
       document.getElementById('header').textContent = `Today is ${day} — ${mysteryKey.charAt(0).toUpperCase()+mysteryKey.slice(1)} Mysteries`;
-      const app = document.getElementById('app'); app.innerHTML = '';
-      // Opening prayers
+      const app = document.getElementById('app');
+      app.innerHTML = '';
       ['creed','our_father'].forEach(id => {
-        const p = prayers.find(p=>p.id===id);
-        const label = document.createElement('label'); label.className='prayer';
-        label.innerHTML = `<input type=checkbox/> ${p.text}`; app.appendChild(label);
+        const p = prayers.find(p => p.id === id);
+        const lbl = document.createElement('label'); lbl.className = 'prayer';
+        lbl.innerHTML = `<input type="checkbox"/> ${p.text}`; app.appendChild(lbl);
       });
-      // Intro
-      ['intro1','intro2'].forEach(txt=>{
-        const label = document.createElement('label'); label.className='prayer';
-        label.innerHTML = `<input type=checkbox/> ${prayers.find(p=>p.id===txt).text}`; app.appendChild(label);
+      ['intro1','intro2'].forEach(id => {
+        const p = prayers.find(p => p.id === id);
+        const lbl = document.createElement('label'); lbl.className = 'prayer';
+        lbl.innerHTML = `<input type="checkbox"/> ${p.text}`; app.appendChild(lbl);
       });
-      // Mysteries
-      mysteriesData[mysteryKey].forEach(m=>{
-        const mLbl = document.createElement('label'); mLbl.className='mystery';
-        mLbl.textContent = m.title; app.appendChild(mLbl);
+      mysteriesData[mysteryKey].forEach(m => {
+        const mLbl = document.createElement('label'); mLbl.className='mystery'; mLbl.textContent = m.title; app.appendChild(mLbl);
         const desc = document.createElement('div'); desc.className='description'; desc.textContent = m.guidance; app.appendChild(desc);
         const of = document.createElement('label'); of.className='prayer';
-        of.innerHTML = `<input type=checkbox/> ${prayers.find(p=>p.id==='our_father').text}`; app.appendChild(of);
-        for(let i=0;i<10;i++){ const hm=document.createElement('label'); hm.className='prayer'; hm.innerHTML=`<input type=checkbox/> ${prayers.find(p=>p.id==='hail_mary').text}`; app.appendChild(hm);}        
-        ['glory_be','fatima_prayer'].forEach(id=>{ const p=prayers.find(p=>p.id===id); const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox/> ${p.text}`; app.appendChild(lbl);});
+        of.innerHTML = `<input type="checkbox"/> ${prayers.find(p=>p.id==='our_father').text}`; app.appendChild(of);
+        for(let i=0;i<10;i++){ const hm = document.createElement('label'); hm.className='prayer'; hm.innerHTML=`<input type="checkbox"/> ${prayers.find(p=>p.id==='hail_mary').text}`; app.appendChild(hm); }
+        ['glory_be','fatima_prayer'].forEach(id => {
+          const p = prayers.find(p=>p.id===id);
+          const lbl = document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type="checkbox"/> ${p.text}`; app.appendChild(lbl);
+        });
         app.appendChild(document.createElement('hr'));
       });
-      // Closing
-      ['hail_holy_queen','final_prayer'].forEach(id=>{ const p=prayers.find(p=>p.id===id); const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox/> ${p.text}`; app.appendChild(lbl); });
+      ['hail_holy_queen','final_prayer'].forEach(id => {
+        const p = prayers.find(p=>p.id===id);
+        const lbl = document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type="checkbox"/> ${p.text}`; app.appendChild(lbl);
+      });
     }
 
-    window.addEventListener('DOMContentLoaded', ()=>{
+    window.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('meditationModal');
-      document.getElementById('closeModal').addEventListener('click', ()=>modal.style.display='none');
-      modal.addEventListener('click', e=>{ if(e.target===modal) modal.style.display='none'; });
-      document.getElementById('mysterySelect').addEventListener('change', e=>renderRosary(e.target.value));
+      document.getElementById('closeModal').addEventListener('click', () => { modal.style.display = 'none'; });
+      modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+      document.getElementById('mysterySelect').addEventListener('change', e => renderRosary(e.target.value));
       renderRosary('auto');
     });
   </script>
