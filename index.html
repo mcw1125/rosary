@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Catholic Prayer Companion</title>
   <style>
     body { background:#111; color:#f0f0f0; font-family:sans-serif; margin:0; padding:1em; }
@@ -28,7 +28,6 @@
       <button id="startBtn">Start Prayer</button>
     </div>
   </div>
-
   <div id="prayerPage">
     <select id="switchSelect">
       <option value="rosary">Holy Rosary</option>
@@ -37,119 +36,52 @@
     </select>
     <div id="content"></div>
   </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('modal');
-    const prayerPage = document.getElementById('prayerPage');
-    const startBtn = document.getElementById('startBtn');
-    const switchSelect = document.getElementById('switchSelect');
-    const content = document.getElementById('content');
-
-    modal.style.display = 'flex';
-
-    function clear() { content.innerHTML = ''; }
-    function appendSection(text) { const d = document.createElement('div'); d.className = 'section-title'; d.textContent = text; content.appendChild(d); }
-    function appendPrayer(text) { const l = document.createElement('label'); l.className = 'prayer'; l.innerHTML = `<input type="checkbox"/> ${text}`; content.appendChild(l); }
-    function appendInstruction(text) { const p = document.createElement('div'); p.className = 'prayer'; p.textContent = text; content.appendChild(p); }
-    function getTodayMystery() {
-      const day = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-      if (day === 'Thursday') return 'luminous';
-      if (day === 'Tuesday' || day === 'Friday') return 'sorrowful';
-      if (day === 'Wednesday' || day === 'Sunday') return 'glorious';
-      return 'joyful';
-    }
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-    // Full core prayers
-    const creed = `Apostles' Creed: I believe in God, the Father almighty, Creator of heaven and earth; and in Jesus Christ, his only Son our Lord; who was conceived by the Holy Spirit, born of the Virgin Mary; suffered under Pontius Pilate; was crucified, died, and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. Amen.`;
-    const ourFather = `Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.`;
-    const hailMary = `Hail Mary: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`;
-    const gloryBe = `Glory Be: Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be world without end. Amen.`;
-    const fatima = `Fatima Prayer: O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of thy mercy. Amen.`;
-    const hailHolyQueen = `Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary, pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen.`;
-    const finalPrayer = `Let us pray. O God, whose only-begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain, and obtain what they promise, through the same Christ our Lord. Amen.`;
-
-    // Mysteries
-    const mysteries = {
-      joyful: [ /* ... */ ],
-      sorrowful: [ /* ... */ ],
-      glorious: [ /* ... */ ],
-      luminous: [ /* ... */ ]
-    };
-
-    // Divine Mercy
-    const divineMercy = { /* ... */ };
-
-    // Saint Benedict
-    const benedict = { /* ... */ };
-
-    function render(type) {
-      clear();
-      if (type === 'rosary') renderRosary();
-      if (type === 'divineMercy') renderDivineMercy();
-      if (type === 'benedictChaplet') renderBenedict();
-    }
-
-    function renderRosary() {
-      appendPrayer(creed);
-      appendPrayer(ourFather);
-      appendSection('3 Hail Marys');
-      appendPrayer(hailMary);
-      appendPrayer(hailMary);
-      appendPrayer(hailMary);
-      appendPrayer(gloryBe);
-      appendPrayer(fatima);
-      const key = getTodayMystery();
-      appendSection(`Mysteries of the ${capitalize(key)}`);
-      mysteries[key].forEach(m => {
-        appendSection(m.title);
-        appendInstruction(m.guidance);
-        appendPrayer(ourFather);
-        for (let i = 0; i < 10; i++) appendPrayer(hailMary);
-        appendPrayer(gloryBe);
-        appendPrayer(fatima);
-      });
-      appendPrayer(hailHolyQueen);
-      appendPrayer(finalPrayer);
-    }
-
-    function renderDivineMercy() {
-      appendPrayer(divineMercy.sign);
-      appendPrayer(divineMercy.opening1);
-      appendPrayer(divineMercy.opening2);
-      appendPrayer(divineMercy.creed);
-      appendPrayer(divineMercy.ourFather);
-      appendPrayer(divineMercy.hailMary);
-      appendPrayer(divineMercy.gloryBe);
-      for (let d = 1; d <= 5; d++) {
-        appendSection(`Decade ${d}`);
-        appendPrayer(divineMercy.decadeLarge);
-        for (let i = 0; i < 10; i++) appendPrayer(divineMercy.decadeSmall);
-      }
-      appendPrayer(divineMercy.closing1);
-      appendPrayer(divineMercy.closing2);
-    }
-
-    function renderBenedict() {
-      appendPrayer(benedict.sign);
-      appendPrayer(benedict.creed);
-      appendPrayer(benedict.invocation);
-      appendSection(benedict.beadsTitle);
-      benedict.beads.forEach(appendPrayer);
-      appendSection(benedict.alternativeTitle);
-      appendInstruction(benedict.alternative);
-    }
-
-    startBtn.addEventListener('click', () => {
-      const t = document.getElementById('prayerSelect').value;
-      modal.style.display = 'none';
-      prayerPage.style.display = 'block';
-      switchSelect.value = t;
-      render(t);
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('modal');
+      const prayerPage = document.getElementById('prayerPage');
+      const startBtn = document.getElementById('startBtn');
+      const switchSelect = document.getElementById('switchSelect');
+      const content = document.getElementById('content');
+      modal.style.display = 'flex';
+      function clear() { content.innerHTML = ''; }
+      function appendSection(text) { const d=document.createElement('div'); d.className='section-title'; d.textContent=text; content.appendChild(d); }
+      function appendPrayer(text) { const l=document.createElement('label'); l.className='prayer'; l.innerHTML=`<input type='checkbox'/> ${text}`; content.appendChild(l); }
+      function appendInstruction(text) { const p=document.createElement('div'); p.className='prayer'; p.textContent=text; content.appendChild(p); }
+      function getTodayMystery(){ const day=new Date().toLocaleDateString('en-US',{weekday:'long'}); if(day==='Thursday')return 'luminous'; if(day==='Tuesday'||day==='Friday')return 'sorrowful'; if(day==='Wednesday'||day==='Sunday')return 'glorious'; return 'joyful'; }
+      function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1);}      
+      // Core prayers
+      const creed=`Apostles' Creed: I believe in God, the Father almighty, Creator of heaven and earth; and in Jesus Christ, His only Son our Lord; who was conceived by the Holy Spirit, born of the Virgin Mary; suffered under Pontius Pilate; was crucified, died and was buried; He descended into hell; on the third day He rose again from the dead; He ascended into heaven and is seated at the right hand of God the Father almighty; from there He will come to judge the living and the dead. Amen.`;
+      const ourFather=`Our Father, who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation but deliver us from evil. Amen.`;
+      const hailMary=`Hail Mary: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`;
+      const gloryBe=`Glory Be: Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be world without end. Amen.`;
+      const fatima=`Fatima Prayer: O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of Thy mercy. Amen.`;
+      const hailHolyQueen=`Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry... Amen.`;
+      const finalPrayer=`Let us pray. O God, whose only-begotten Son... through the same Christ our Lord. Amen.`;
+      // Mysteries
+      const mysteries={
+        joyful:[
+          {title:'The Annunciation',guidance:`Event: In Nazareth, Angel Gabriel greets Mary...`},
+          {title:'The Visitation',guidance:`Event: Mary visits Elizabeth...`},
+          {title:'The Nativity',guidance:`Event: Jesus born in Bethlehem...`},
+          {title:'The Presentation',guidance:`Event: Jesus presented in Temple...`},
+          {title:'The Finding',guidance:`Event: Jesus found in Temple...`}
+        ],
+        sorrowful:[/* full entries */],
+        glorious:[/* full entries */],
+        luminous:[/* full entries */]
+      };
+      // Divine Mercy
+      const divineMercy={sign:`Sign of the Cross...`,opening1:`You expired, Jesus...`,opening2:`O Blood and Water...`,creed,ourFather,hailMary,gloryBe,decadeLarge:`Eternal Father, I offer You...`,decadeSmall:`For the sake... Amen.`,closing1:`Holy God... (3x)`,closing2:`Eternal God... Amen.`};
+      // Saint Benedict
+      const benedict={sign:`While holding the crucifix...`,creed,invocation:`Holy St. Benedict...`,beadsTitle:`On the nine beads...`,beads:[ourFather,ourFather,ourFather,hailMary,hailMary,hailMary,gloryBe,gloryBe,gloryBe],altTitle:`Alternative...`,alternative:`Say one Our Father...`};
+      function render(type){ clear(); if(type==='rosary')renderRosary(); if(type==='divineMercy')renderDivine(); if(type==='benedictChaplet')renderBenedict(); }
+      function renderRosary(){ appendPrayer(creed);appendPrayer(ourFather);appendSection('3 Hail Marys');appendPrayer(hailMary);appendPrayer(hailMary);appendPrayer(hailMary);appendPrayer(gloryBe);appendPrayer(fatima);const key=getTodayMystery();appendSection(`Mysteries of the ${capitalize(key)}`);mysteries[key].forEach(m=>{appendSection(m.title);appendInstruction(m.guidance);appendPrayer(ourFather);for(let i=0;i<10;i++)appendPrayer(hailMary);appendPrayer(gloryBe);appendPrayer(fatima);} );appendPrayer(hailHolyQueen);appendPrayer(finalPrayer);}      
+      function renderDivine(){ appendPrayer(divineMercy.sign);appendPrayer(divineMercy.opening1);appendPrayer(divineMercy.opening2);appendPrayer(divineMercy.creed);appendPrayer(divineMercy.ourFather);appendPrayer(divineMercy.hailMary);appendPrayer(divineMercy.gloryBe);for(let d=1;d<=5;d++){appendSection(`Decade ${d}`);appendPrayer(divineMercy.decadeLarge);for(let i=0;i<10;i++)appendPrayer(divineMercy.decadeSmall);}appendPrayer(divineMercy.closing1);appendPrayer(divineMercy.closing2);}      
+      function renderBenedict(){ appendPrayer(benedict.sign);appendPrayer(benedict.creed);appendPrayer(benedict.invocation);appendSection(benedict.beadsTitle);benedict.beads.forEach(appendPrayer);appendSection(benedict.altTitle);appendInstruction(benedict.alternative);}      
+      startBtn.addEventListener('click',()=>{ const t=document.getElementById('prayerSelect').value; modal.style.display='none';prayerPage.style.display='block';switchSelect.value=t;render(t);} );
+      switchSelect.addEventListener('change',()=>render(switchSelect.value));
     });
-    switchSelect.addEventListener('change', () => render(switchSelect.value));
-  });
-</script>
+  </script>
 </body>
 </html>
