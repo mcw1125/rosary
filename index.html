@@ -38,7 +38,7 @@
     <div id="content"></div>
   </div>
 
-  <script>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const prayerPage = document.getElementById('prayerPage');
@@ -46,136 +46,99 @@
     const switchSelect = document.getElementById('switchSelect');
     const content = document.getElementById('content');
 
-    // Show modal
     modal.style.display = 'flex';
 
-    // Helpers
     function clear() { content.innerHTML = ''; }
     function appendSection(text) { const d = document.createElement('div'); d.className='section-title'; d.textContent=text; content.appendChild(d); }
     function appendInstruction(text) { const p = document.createElement('div'); p.className='prayer'; p.textContent=text; content.appendChild(p); }
-    function appendPrayer(text) { const l = document.createElement('label'); l.className='prayer'; l.innerHTML = `<input type=checkbox/> ${text}`; content.appendChild(l); }
+    function appendPrayer(text) { const l = document.createElement('label'); l.className='prayer'; l.innerHTML = `<input type="checkbox"/> ${text}`; content.appendChild(l); }
     function getTodayMystery() { const day=new Date().toLocaleDateString('en-US',{weekday:'long'}); if(day==='Thursday')return'luminous'; if(day==='Tuesday'||day==='Friday')return'sorrowful'; if(day==='Wednesday'||day==='Sunday')return'glorious'; return'joyful'; }
     function capitalize(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
 
-    // Data
+    const fullCreed = `Apostles' Creed: I believe in God, the Father almighty, Creator of heaven and earth; and in Jesus Christ, His only Son, our Lord; who was conceived by the Holy Spirit, born of the Virgin Mary; suffered under Pontius Pilate, was crucified, died and was buried; He descended into hell; on the third day He rose again from the dead; He ascended into heaven, and is seated at the right hand of God, the Father almighty; from there He will come to judge the living and the dead. Amen.`;
+    const fullOurFather = `Our Father: Our Father, who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.`;
+    const fullHailMary = `Hail Mary: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women; and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.`;
+    const fullGloryBe = `Glory Be: Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen.`;
+    const fullFatima = `Fatima Prayer: O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of Thy mercy. Amen.`;
+
     const rosaryData = {
-      creed: `Apostles' Creed: I believe in God, the Father almighty, Creator of heaven and earth; and in Jesus Christ, His only Son, our Lord; who was conceived by the Holy Spirit, born of the Virgin Mary; suffered under Pontius Pilate; was crucified, died, and was buried; He descended into hell; on the third day He rose again from the dead; He ascended into heaven, and is seated at the right hand of God, the Father almighty; from there He will come to judge the living and the dead. Amen.`,
-      ourFather: `Our Father: Our Father, who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.`,
-      hailMaryFaith: `Hail Mary for Faith: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women; and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`,
-      hailMaryHope: `Hail Mary for Hope: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women; and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`,
-      hailMaryCharity: `Hail Mary for Charity: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women; and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`,
-      hailMary: `Hail Mary: Hail Mary, full of grace, the Lord is with thee; blessed art thou among women; and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen.`,
-      gloryBe: `Glory Be: Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen.`,
-      fatimaPrayer: `Fatima Prayer: O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of Thy mercy. Amen.`,
+      creed: fullCreed,
+      ourFather: fullOurFather,
+      hailFaith: `Hail Mary for Faith: ${fullHailMary.split(': ')[1]}`,
+      hailHope: `Hail Mary for Hope: ${fullHailMary.split(': ')[1]}`,
+      hailCharity: `Hail Mary for Charity: ${fullHailMary.split(': ')[1]}`,
+      hail: fullHailMary,
+      glory: fullGloryBe,
+      fatima: fullFatima,
+      hailHolyQueen: `Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen.`,
+      finalPrayer: `Let us pray. O God, whose only-begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain, and obtain what they promise, through the same Christ our Lord. Amen.`,
       mysteries: {
         joyful: [
-          { title:'The Annunciation', guidance:`Event: In Nazareth, the Angel Gabriel greets Mary.\nDetails: Hear Gabriel's greeting and Mary's 'Yes.'\nMeditation: Ask for openness to God's will.` },
-          { title:'The Visitation', guidance:`Event: Mary visits Elizabeth in the hill country.\nDetails: Feel Elizabeth's joy-filled embrace and hear Mary's Magnificat.\nMeditation: Reflect on serving others with a joyful heart.` },
-          { title:'The Nativity', guidance:`Event: Jesus is born in Bethlehem.\nDetails: Picture the humble stable, the infant Jesus, the shepherds' wonder, and the angels' Gloria.\nMeditation: Welcome simplicity and God's presence in the ordinary.` },
-          { title:'The Presentation', guidance:`Event: Mary and Joseph present Jesus in the Temple.\nDetails: Witness Simeon's prophetic praise and Anna's thanksgiving.\nMeditation: Offer your own gifts and family back to God with trust.` },
-          { title:'The Finding in the Temple', guidance:`Event: Twelve-year-old Jesus teaches in the Temple.\nDetails: Observe His wisdom and Mary's relief.\nMeditation: Prioritize seeking Christ in prayer and Scripture.` }
+          {title:'The Annunciation',guidance:`Event: In Nazareth, the Angel Gabriel proclaims Mary is to be Mother of the Savior.\nDetails: Picture Gabriel's radiance and Mary's 'Fiat.'\nMeditation: Ask for openness to God's will.`},
+          {title:'The Visitation',guidance:`Event: Mary visits Elizabeth.\nDetails: Feel her embrace and hear Mary's Magnificat.\nMeditation: Serve others with joy.`},
+          {title:'The Nativity',guidance:`Event: Jesus is born in Bethlehem.\nDetails: See the stable, infant Jesus, shepherds, angels.\nMeditation: Welcome God's presence in simplicity.`},
+          {title:'The Presentation',guidance:`Event: Jesus presented in the Temple.\nDetails: Witness Simeon and Anna's praise.\nMeditation: Offer your gifts to God.`},
+          {title:'The Finding in the Temple',guidance:`Event: Jesus teaching in the Temple.\nDetails: Observe His wisdom and Mary's relief.\nMeditation: Seek Christ in Scripture.`}
         ],
         sorrowful:[
-          { title:'The Agony in the Garden', guidance:`Event: Jesus prays in Gethsemane.\nDetails: Feel His dread and hear 'Not my will, but Yours.'\nMeditation: Bring your anxieties to Jesus and trust His plan.` },
-          { title:'The Scourging at the Pillar', guidance:`Event: Jesus is whipped.\nDetails: Contemplate each lash and His patient love.\nMeditation: Unite your own trials with His suffering.` },
-          { title:'The Crowning with Thorns', guidance:`Event: Soldiers mock Jesus, placing a crown of thorns.\nDetails: Hear their jeers and see His blood.\nMeditation: Embrace humility and forgive.` },
-          { title:'The Carrying of the Cross', guidance:`Event: Jesus carries His cross.\nDetails: Feel its weight and Simon's help.\nMeditation: Offer your burdens to Him.` },
-          { title:'The Crucifixion', guidance:`Event: Jesus is nailed to the cross.\nDetails: Stand at the foot and hear His last words.\nMeditation: Lay your sins before Him.` }
+          {title:'The Agony in the Garden',guidance:`Event: Jesus prays in Gethsemane.\nDetails: See His sweat of blood and trust in the Father.\nMeditation: Surrender your anxieties to Jesus.`},
+          {title:'The Scourging at the Pillar',guidance:`Event: Jesus is whipped.\nDetails: Contemplate each lash and His patience.\nMeditation: Unite your sufferings with His.`},
+          {title:'The Crowning with Thorns',guidance:`Event: Jesus crowned with thorns.\nDetails: Hear the mockery and see His blood.\nMeditation: Embrace humility.`},
+          {title:'The Carrying of the Cross',guidance:`Event: Jesus carries His cross.\nDetails: Feel its weight and Simon’s aid.\nMeditation: Offer your burdens to Him.`},
+          {title:'The Crucifixion',guidance:`Event: Jesus is nailed to the cross.\nDetails: Stand at the foot and hear His last words.\nMeditation: Lay your sins before Him.`}
         ],
         glorious:[
-          { title:'The Resurrection', guidance:`Event: Christ rises on the third day.\nDetails: See the empty tomb and angel's message.\nMeditation: Embrace new life.` },
-          { title:'The Ascension', guidance:`Event: Jesus ascends to heaven.\nDetails: Watch Him disappear in clouds.\nMeditation: Trust His promise to return.` },
-          { title:'The Descent of the Holy Spirit', guidance:`Event: Tongues of fire rest on the Apostles at Pentecost.\nDetails: Feel their empowerment.\nMeditation: Invite the Spirit's gifts.` },
-          { title:'The Assumption', guidance:`Event: Mary assumed into heaven.\nDetails: Envision angels welcoming her.\nMeditation: Aspire to purity.` },
-          { title:'The Coronation of Mary', guidance:`Event: Mary crowned Queen of Heaven.\nDetails: Marvel at her care.\nMeditation: Seek her intercession.` }
+          {title:'The Resurrection',guidance:`Event: Christ rises on the third day.\nDetails: See the empty tomb and angel.\nMeditation: Embrace new life.`},
+          {title:'The Ascension',guidance:`Event: Jesus ascends to heaven.\nDetails: Watch Him lift into clouds.\nMeditation: Trust His promise.`},
+          {title:'The Descent of the Holy Spirit',guidance:`Event: Tongues of fire at Pentecost.\nDetails: Feel the Spirit’s empowerment.\nMeditation: Invite the Spirit.`},
+          {title:'The Assumption',guidance:`Event: Mary assumed into heaven.\nDetails: Envision angels welcoming her.\nMeditation: Aspire to purity.`},
+          {title:'The Coronation of Mary',guidance:`Event: Mary crowned Queen of Heaven.\nDetails: Marvel at her reign.\nMeditation: Seek her intercession.`}
         ],
         luminous:[
-          { title:'The Baptism of Jesus', guidance:`Event: Jesus baptized by John.\nDetails: Hear 'This is my beloved Son.'\nMeditation: Renew your baptismal vows.` },
-          { title:'The Wedding at Cana', guidance:`Event: Water to wine at Cana.\nDetails: See jars fill with wine.\nMeditation: Trust Mary's intercession.` },
-          { title:'The Proclamation of the Kingdom', guidance:`Event: Jesus proclaims the Kingdom is near.\nDetails: Hear His call to repent.\nMeditation: Embrace Gospel conversion.` },
-          { title:'The Transfiguration', guidance:`Event: Jesus transfigured.\nDetails: Behold His radiant face.\nMeditation: Seek divine clarity.` },
-          { title:'The Institution of the Eucharist', guidance:`Event: Last Supper Institution.\nDetails: Focus on bread and wine.\nMeditation: Deepen Eucharistic love.` }
+          {title:'The Baptism of Jesus',guidance:`Event: Jesus baptized by John.\nDetails: Hear the Father's voice.\nMeditation: Renew your baptism.`},
+          {title:'The Wedding at Cana',guidance:`Event: Water to wine.\nDetails: See jars fill.\nMeditation: Trust Mary's intercession.`},
+          {title:'The Proclamation of the Kingdom',guidance:`Event: Jesus proclaims God's Kingdom.\nDetails: Hear His call.\nMeditation: Embrace conversion.`},
+          {title:'The Transfiguration',guidance:`Event: Jesus transfigured.\nDetails: Behold His glory.\nMeditation: Seek God's light.`},
+          {title:'The Institution of the Eucharist',guidance:`Event: Last Supper.\nDetails: Focus on bread and wine.\nMeditation: Love the Eucharist.`}
         ]
-      },
-      hailHolyQueen:`Hail, holy Queen, Mother of mercy... Amen.`,
-      finalPrayer:`Let us pray. O God... Amen.`
+      }
     };
 
-    const divineMercyData = {
+    const divine = {
       opening:[
         `Sign of the Cross: In the name of the Father, and of the Son, and of the Holy Spirit. Amen.`,
         `You expired, Jesus, but the source of life gushed forth for souls, and the ocean of mercy opened up for the whole world. O Fount of Life, unfathomable Divine Mercy, envelop the whole world and empty Yourself out upon us.`,
-        `O Blood and Water, which gushed forth from the Heart of Jesus as a fountain of mercy for us, I trust in You. (3x)`
+        `Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, our Lord Jesus Christ, in atonement for our sins and those of the whole world.`
       ],
-      creed:`Apostles' Creed: I believe in God... Amen.`,
-      ourFather:`Our Father:... Amen.`,
-      hailMary:`Hail Mary:... Amen.`,
-      gloryBe:`Glory Be:... Amen.`,
-      decade:{
-        large:`Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son Jesus Christ in atonement for our sins and those of the whole world.`,
-        small:`For the sake of His sorrowful Passion, have mercy on us and on the whole world. Amen.`
-      },
+      small:`For the sake of His sorrowful Passion, have mercy on us and on the whole world. Amen.`,
       closing:[
         `Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world. (3x)`,
-        `Eternal God, in whom mercy is endless and the treasury of compassion inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your Holy Will, which is Love and Mercy itself. Amen.`
+        `Eternal God, in whom mercy is endless and the treasury of compassion inexhaustible, look kindly upon us and increase Your mercy in us... Amen.`
       ]
     };
 
-    const benedictChapletData = {
-      creed:`Apostles' Creed: I believe in God... Amen.`,
-      invocation:`Holy St. Benedict, we honor you for your self-sacrifice and solitary devotion to our Lord. May your life of prayer and contemplation inspire in all of us a similar respect for holiness and deep spirituality. We thank you for the Rule of St. Benedict and the strength and example of your monastic commitment. All things begin when we listen to the voice of God. Amen.`,
-      beads:`On the nine beads, say three Our Fathers, three Hail Marys, and three Glory Bes. Or say one Our Father, one Hail Mary, and one Glory Be, three times.`
+    const benedict = {
+      creed: fullCreed,
+      prayer:`Holy St. Benedict, we honor you for your self-sacrifice and solitary devotion to our Lord. May your life of prayer and contemplation inspire in all of us a similar respect for holiness and deep spirituality. We thank you for the Rule of St. Benedict and the strength and example of your monastic commitment. All things begin when we listen to the voice of God. Amen.`,
+      beads:`On the crucifix, make the Sign of the Cross, recite the Creed above. Then on the nine beads say three Our Fathers, three Hail Marys, and three Glory Bes; or one of each three times.`
     };
 
-    // Renderers
-    function render(type){ clear(); if(type==='rosary')renderRosary(); if(type==='divineMercy')renderDivineMercy(); if(type==='benedictChaplet')renderBenedict(); }
+    function render(type){ clear(); if(type==='rosary')renderRosary(); if(type==='divineMercy')renderDivine(); if(type==='benedictChaplet')renderBenedict(); }
     function renderRosary(){
       appendPrayer(rosaryData.creed);
       appendPrayer(rosaryData.ourFather);
-      appendSection('3 Hail Marys - Faith, Hope, Charity');
-      appendPrayer(rosaryData.hailMaryFaith);
-      appendPrayer(rosaryData.hailMaryHope);
-      appendPrayer(rosaryData.hailMaryCharity);
-      appendPrayer(rosaryData.gloryBe);
-      appendPrayer(rosaryData.fatimaPrayer);
-      const key=getTodayMystery(); appendSection('Mysteries of the '+capitalize(key));
-      rosaryData.mysteries[key].forEach(m=>{
-        appendSection(m.title);
-        appendInstruction(m.guidance);
-        appendPrayer(rosaryData.ourFather);
-        for(let i=0;i<10;i++)appendPrayer(rosaryData.hailMary);
-        appendPrayer(rosaryData.gloryBe);
-        appendPrayer(rosaryData.fatimaPrayer);
-      });
-      appendPrayer(rosaryData.hailHolyQueen);
-      appendPrayer(rosaryData.finalPrayer);
+      appendSection('3 Hail Marys'); appendPrayer(rosaryData.hailFaith); appendPrayer(rosaryData.hailHope); appendPrayer(rosaryData.hailCharity);
+      appendPrayer(rosaryData.glory); appendPrayer(rosaryData.fatima);
+      const m=getTodayMystery(); appendSection(`Mysteries of the ${capitalize(m)}`);
+      rosaryData.mysteries[m].forEach(x=>{ appendSection(x.title); appendInstruction(x.guidance); appendPrayer(rosaryData.ourFather); for(let i=0;i<10;i++)appendPrayer(rosaryData.hail); appendPrayer(rosaryData.glory); appendPrayer(rosaryData.fatima); });
+      appendPrayer(rosaryData.hailHolyQueen); appendPrayer(rosaryData.finalPrayer);
     }
-    function renderDivineMercy(){
-      divineMercyData.opening.forEach(appendPrayer);
-      appendPrayer(divineMercyData.creed);
-      appendPrayer(divineMercyData.ourFather);
-      appendPrayer(divineMercyData.hailMary);
-      appendPrayer(divineMercyData.gloryBe);
-      for(let d=1;d<=5;d++){
-        appendSection('Decade '+d);
-        appendPrayer(divineMercyData.decade.large);
-        for(let i=0;i<10;i++)appendPrayer(divineMercyData.decade.small);
-      }
-      divineMercyData.closing.forEach(appendPrayer);
-    }
-    function renderBenedict(){
-      appendPrayer(benedictChapletData.creed);
-      appendInstruction('While holding the crucifix, make the Sign of the Cross and say the Apostles\' Creed above.');
-      appendPrayer(benedictChapletData.invocation);
-      appendInstruction(benedictChapletData.beads);
-    }
+    function renderDivine(){ divine.opening.forEach(appendPrayer); appendPrayer(fullCreed); appendPrayer(fullOurFather); appendPrayer(fullHailMary); for(let d=1;d<=5;d++){ appendSection('Decade '+d); appendPrayer(divine.opening[2]); for(let i=0;i<10;i++)appendPrayer(divine.small);} divine.closing.forEach(appendPrayer); }
+    function renderBenedict(){ appendPrayer(benedict.creed); appendPrayer(benedict.prayer); appendInstruction(benedict.beads); }
 
-    // Initialize events
-    startBtn.addEventListener('click',()=>{
-      const t=document.getElementById('prayerSelect').value; modal.style.display='none'; prayerPage.style.display='block'; switchSelect.value=t; render(t);
-    });
+    startBtn.addEventListener('click',()=>{const t=document.getElementById('prayerSelect').value;modal.style.display='none';prayerPage.style.display='block';switchSelect.value=t;render(t);});
     switchSelect.addEventListener('change',()=>render(switchSelect.value));
   });
-  </script>
+</script>
 </body>
 </html>
