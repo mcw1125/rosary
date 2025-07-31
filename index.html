@@ -62,37 +62,81 @@
     const fullGloryBe = `Glory Be: Glory be to the Father, and to the Son, and to the Holy Spirit; as it was in the beginning, is now, and ever shall be, world without end. Amen.`;
     const fullFatima = `Fatima Prayer: O my Jesus, forgive us our sins; save us from the fires of hell; lead all souls to heaven, especially those most in need of Thy mercy. Amen.`;
 
-    // Rosary data (as before)
-    const rosaryData = { /* ... */ };
-    const divineData = { /* ... */ };
-
-    // Saint Benedict Chaplet data expanded
-    const benedict = {
-      sign: `While holding the crucifix, make the Sign of the Cross.`,
+    // Rosary data
+    const rosaryData = {
       creed: fullCreed,
-      invocation: `Holy St. Benedict, we honor you for your self-sacrifice and solitary devotion to our Lord. May your life of prayer and contemplation inspire in all of us a similar respect for holiness and deep spirituality. We thank you for the Rule of St. Benedict and the strength and example of your monastic commitment. All things begin when we listen to the voice of God. Amen.`,
-      beadsTitle: `On the nine beads, pray:`,
-      beads: [
-        fullOurFather,
-        fullOurFather,
-        fullOurFather,
-        fullHailMary,
-        fullHailMary,
-        fullHailMary,
-        fullGloryBe,
-        fullGloryBe,
-        fullGloryBe
-      ],
-      alternativeTitle: `Alternative method:`,
-      alternative: `On the nine beads, say one Our Father, one Hail Mary, and one Glory Be—three times.`
+      ourFather: fullOurFather,
+      hailFaith: `Hail Mary for Faith: ${fullHailMary.split(': ')[1]}`,
+      hailHope: `Hail Mary for Hope: ${fullHailMary.split(': ')[1]}`,
+      hailCharity: `Hail Mary for Charity: ${fullHailMary.split(': ')[1]}`,
+      hail: fullHailMary,
+      glory: fullGloryBe,
+      fatima: fullFatima,
+      hailHolyQueen: `Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry... Amen.`,
+      finalPrayer: `Let us pray. O God... Amen.`,
+      mysteries: {
+        joyful: [
+          {title:'The Annunciation',guidance:`Event: In Nazareth, the Angel Gabriel proclaims Mary as Mother of the Savior.\nDetails: See Gabriel's radiance...\nMeditation: Ask for openness.`},
+          {title:'The Visitation',guidance:`Event: Mary visits Elizabeth...`,}
+        ],
+        sorrowful: [],
+        glorious: [],
+        luminous: []
+      }
     };
 
-    // Render functions
+    // Divine Mercy data
+    const divineMerchy = {
+      opening: [
+        `Sign of the Cross: In the name of the Father... Amen.`,
+        `You expired, Jesus... empty Yourself out upon us.`,
+        `Eternal Father, I offer You the Body... of Jesus Christ.`
+      ],
+      creed: fullCreed,
+      ourFather: fullOurFather,
+      hailMary: fullHailMary,
+      glory: fullGloryBe,
+      decadeLarge: `Eternal Father, I offer You... of the whole world.`,
+      decadeSmall: `For the sake of His sorrowful Passion... Amen.`,
+      closing: [
+        `Holy God, Holy Mighty One... world. (x3)`,
+        `Eternal God, in whom mercy is endless... Amen.`
+      ]
+    };
+
+    // Saint Benedict Chaplet data
+    const benedict = {
+      sign: `While holding the crucifix...`,
+      creed: fullCreed,
+      invocation: `Holy St. Benedict... voice of God. Amen.`,
+      beadsTitle: `On the nine beads, pray:`,
+      beads: [fullOurFather,fullOurFather,fullOurFather,fullHailMary,fullHailMary,fullHailMary,fullGloryBe,fullGloryBe,fullGloryBe],
+      alternativeTitle: `Alternative method:`,
+      alternative: `Say one Our Father, one Hail Mary, and one Glory Be, three times.`
+    };
+
     function render(type) {
       clear();
-      if (type === 'rosary') renderRosary();
-      if (type === 'divineMercy') renderDivine();
-      if (type === 'benedictChaplet') renderBenedict();
+      if(type==='rosary') renderRosary();
+      if(type==='divineMercy') renderDivine();
+      if(type==='benedictChaplet') renderBenedict();
+    }
+
+    function renderRosary() {
+      appendPrayer(rosaryData.creed);
+      appendPrayer(rosaryData.ourFather);
+      appendSection('3 Hail Marys'); appendPrayer(rosaryData.hailFaith); appendPrayer(rosaryData.hailHope); appendPrayer(rosaryData.hailCharity);
+      appendPrayer(rosaryData.glory); appendPrayer(rosaryData.fatima);
+      const m=getTodayMystery(); appendSection(`Mysteries of the ${capitalize(m)}`);
+      rosaryData.mysteries[m].forEach(mst=>{appendSection(mst.title);appendInstruction(mst.guidance);appendPrayer(rosaryData.ourFather);for(let i=0;i<10;i++)appendPrayer(rosaryData.hail);appendPrayer(rosaryData.glory);appendPrayer(rosaryData.fatima);});
+      appendPrayer(rosaryData.hailHolyQueen);appendPrayer(rosaryData.finalPrayer);
+    }
+
+    function renderDivine() {
+      divineMerchy.opening.forEach(appendPrayer);
+      appendPrayer(divineMerchy.creed);appendPrayer(divineMerchy.ourFather);appendPrayer(divineMerchy.hailMary);appendPrayer(divineMerchy.glory);
+      for(let d=1;d<=5;d++){appendSection(`Decade ${d}`);appendPrayer(divineMerchy.decadeLarge);for(let i=0;i<10;i++)appendPrayer(divineMerchy.decadeSmall);}      
+      divineMerchy.closing.forEach(appendPrayer);
     }
 
     function renderBenedict() {
@@ -100,20 +144,19 @@
       appendPrayer(benedict.creed);
       appendPrayer(benedict.invocation);
       appendSection(benedict.beadsTitle);
-      benedict.beads.forEach(prayer => appendPrayer(prayer));
+      benedict.beads.forEach(appendPrayer);
       appendSection(benedict.alternativeTitle);
       appendInstruction(benedict.alternative);
     }
 
-    // Event listeners
-    startBtn.addEventListener('click', () => {
+    startBtn.addEventListener('click', ()=>{
       const t = document.getElementById('prayerSelect').value;
       modal.style.display = 'none';
       prayerPage.style.display = 'block';
       switchSelect.value = t;
       render(t);
     });
-    switchSelect.addEventListener('change', () => render(switchSelect.value));
+    switchSelect.addEventListener('change', ()=> render(switchSelect.value));
   });
 </script>
 </body>
