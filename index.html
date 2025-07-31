@@ -5,151 +5,191 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catholic Prayer Companion</title>
   <style>
-    body { background-color: #111; color: #f0f0f0; font-family: sans-serif; padding: 1em; margin: 0; }
-    button, select { font-size: 1rem; margin: 0.5em 0; }
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:1000; }
-    .modal-content { background-color:#222; color:#f0f0f0; padding:1.5em; border-radius:8px; max-width:600px; height:80%; overflow-y:auto; position:relative; }
-    .modal-close { position:absolute; top:0.5em; right:0.5em; font-size:1.5rem; background:none; border:none; color:#f0f0f0; cursor:pointer; }
-    .section-title { font-weight:bold; font-size:1.2em; margin-top:1.5em; }
-    .prayer { display:block; margin: 0.5em 0; }
+    body { background:#111; color:#f0f0f0; font-family:sans-serif; margin:0; padding:1em; }
+    .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:1000; }
+    .modal-content { background:#222; padding:2em; border-radius:8px; width:90%; max-width:400px; text-align:center; }
+    .modal-content select, .modal-content button { width:100%; margin-top:1em; padding:0.5em; font-size:1rem; }
+    #prayerPage { display:none; }
+    #switchSelect { width:100%; padding:0.5em; font-size:1rem; margin-bottom:1em; }
+    .section-title { font-size:1.2em; font-weight:bold; margin-top:1.5em; }
+    .prayer { display:flex; align-items:flex-start; margin:0.5em 0; }
+    .prayer input { margin-right:0.5em; margin-top:0.2em; }
   </style>
 </head>
 <body>
-  <button id="openModal">Switch Prayer Type</button>
+  <!-- Modal for selecting prayer -->
   <div id="modal" class="modal-overlay">
     <div class="modal-content">
-      <button id="closeModal" class="modal-close">&times;</button>
-      <h3>Select Prayer Type</h3>
+      <h2>Select Prayer Type</h2>
       <select id="prayerSelect">
         <option value="rosary">Holy Rosary</option>
         <option value="divineMercy">Divine Mercy Chaplet</option>
         <option value="sacredHeart">Sacred Heart Devotion</option>
       </select>
-      <button id="startPrayer">Start Prayer</button>
-      <div id="instructions" class="prayer" style="margin-top:1em;"></div>
+      <button id="startBtn">Start Prayer</button>
     </div>
   </div>
-  <div id="prayerContainer"></div>
 
-  <script>
-    // Data for Holy Rosary
-    const prayers = [
-      { id: 'creed', text: `Apostles' Creed: I believe in God, the Father almighty... Amen.` },
-      { id: 'our_father', text: `Our Father: Our Father, who art in heaven... Amen.` },
-      { id: 'hail_mary', text: `Hail Mary: Hail Mary, full of grace... Amen.` },
-      { id: 'glory_be', text: `Glory Be: Glory be to the Father... Amen.` },
-      { id: 'fatima_prayer', text: `Fatima Prayer: O my Jesus, forgive us our sins... Amen.` },
-      { id: 'hail_holy_queen', text: `Hail Holy Queen: Hail, holy Queen, Mother of mercy... Amen.` },
-      { id: 'final_prayer', text: `Final Prayer: Let us pray. O God, whose only-begotten Son... Amen.` }
-    ];
-    const mysteriesData = { /* same data as original with full guidance texts */
-      joyful: [ /* 5 joyful mysteries */ ],
-      sorrowful: [ /* 5 sorrowful mysteries */ ],
-      glorious: [ /* 5 glorious mysteries */ ],
-      luminous: [ /* 5 luminous mysteries */ ]
-    };
-    function getTodayMysteryKey() {
-      const day = new Date().toLocaleDateString('en-US',{weekday:'long'});
-      if(day==='Thursday') return 'luminous';
-      if(day==='Tuesday'||day==='Friday') return 'sorrowful';
-      if(day==='Wednesday'||day==='Sunday') return 'glorious';
-      return 'joyful';
-    }
-    
-    // Data for Divine Mercy Chaplet
-    const divineMercyData = {
-      openingPrayers: [
-        `You expired, Jesus, but the source of life gushed forth for souls...`,
-        `O Blood and Water, which gushed forth from the Heart of Jesus as a fountain of mercy for us, I trust in You.`
-      ],
-      largeBead: `Eternal Father, I offer You the Body and Blood...`,
-      smallBead: `For the sake of His sorrowful Passion, have mercy on us and on the whole world.`,
-      closingPrayers: [
-        `Holy God, Holy Mighty, Holy Immortal One, have mercy on us. (3 times)`,
-        `Eternal God, in whom mercy is endless... Amen.`
-      ]
-    };
+  <!-- Main prayer page -->
+  <div id="prayerPage">
+    <select id="switchSelect">
+      <option value="rosary">Holy Rosary</option>
+      <option value="divineMercy">Divine Mercy Chaplet</option>
+      <option value="sacredHeart">Sacred Heart Devotion</option>
+    </select>
+    <div id="content"></div>
+  </div>
 
-    // Data for Sacred Heart Devotion
-    const sacredHeartData = {
-      actConsecration: `O most holy Heart of Jesus, fountain of every blessing, I adore Thee... Amen.`,
-      prayer: `O most holy Heart of Jesus, fountain of every blessing... Amen.`,
-      litany: [
-        `Heart of Jesus, Son of the Eternal Father, have mercy on us.`,
-        `Heart of Jesus, formed by the Holy Spirit... have mercy on us.`,
-        // ... include full 45+ invocations here ...
-      ],
-      actReparation: `Look down, O Heart of love, and behold the openings made in Thee by the sins of mankind...`,
-      firstFriday: `First Friday Devotions: Offer Mass, 15-minute meditation, and Communion on nine consecutive First Fridays.`
-    };
+<script>
+// Data definitions
+const rosaryData = {
+  prayers: [
+    `Apostles' Creed: I believe in God, the Father almighty, Creator of heaven and earth... Amen.`,
+    `Our Father: Our Father, who art in heaven, hallowed be thy name... Amen.`,
+    `Hail Mary: Hail Mary, full of grace... Amen.`,
+    `Glory Be: Glory be to the Father, and to the Son... Amen.`,
+    `Fatima Prayer: O my Jesus, forgive us our sins... Amen.`
+  ],
+  mysteries: {
+    joyful: [
+      { title: 'The Annunciation', guidance: `Visualize Gabriel greeting Mary... Ask for openness.` },
+      { title: 'The Visitation', guidance: `Picture Mary's visit to Elizabeth... Emulate joyful service.` },
+      { title: 'The Nativity', guidance: `Imagine the stable scene... Welcome simplicity.` },
+      { title: 'The Presentation', guidance: `See Jesus presented in the Temple... Trust God's plan.` },
+      { title: 'The Finding in the Temple', guidance: `Recall Jesus teaching in the Temple... Seek Christ in Scripture.` }
+    ],
+    sorrowful: [ /* similar structure with titles and guidance */ ],
+    glorious: [ /* ... */ ],
+    luminous: [ /* ... */ ]
+  },
+  hailHolyQueen: `Hail, holy Queen, Mother of mercy... Amen.`,
+  finalPrayer: `Let us pray. O God, whose only-begotten Son... Amen.`
+};
 
-    // UI Handlers
-    const modal = document.getElementById('modal');
-    document.getElementById('openModal').onclick = ()=>modal.style.display='flex';
-    document.getElementById('closeModal').onclick = ()=>modal.style.display='none';
-    window.onclick = e=>{ if(e.target===modal) modal.style.display='none'; };
-    document.getElementById('startPrayer').onclick = ()=>{
-      const type=document.getElementById('prayerSelect').value;
-      modal.style.display='none'; document.getElementById('instructions').textContent='';
-      document.getElementById('prayerContainer').innerHTML='';
-      if(type==='rosary') renderRosary();
-      if(type==='divineMercy') renderDivineMercy();
-      if(type==='sacredHeart') renderSacredHeart();
-    };
+const divineMercyData = {
+  opening: [
+    `Sign of the Cross: In the name of the Father... Amen.`,
+    `You expired, Jesus, but the source of life gushed forth for souls...`,
+    `O Blood and Water, which gushed forth from the Heart of Jesus... Amen.`
+  ],
+  creed: `Apostles' Creed: ... Amen.`,
+  ourFather: `Our Father: ... Amen.`,
+  hailMary: `Hail Mary: ... Amen.`,
+  decade: {
+    large: `Eternal Father, I offer You the Body and Blood...`,
+    small: `For the sake of His sorrowful Passion... Amen.`
+  },
+  closing: [
+    `Holy God, Holy Mighty, Holy Immortal One, have mercy on us. (3x)`,
+    `Eternal God, in whom mercy is endless... Amen.`
+  ]
+};
 
-    function renderRosary(){
-      const key=getTodayMysteryKey();
-      document.getElementById('instructions').textContent = `Today: ${key.charAt(0).toUpperCase()+key.slice(1)} Mysteries.`;
-      const c=document.getElementById('prayerContainer');
-      prayers.forEach(p=>{ const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox> ${p.text}`; c.append(lbl); });
-      const mysteries=mysteriesData[key];
-      mysteries.forEach(m=>{
-        const title=document.createElement('div'); title.className='section-title'; title.textContent=m.title; c.append(title);
-        const desc=document.createElement('div'); desc.className='prayer'; desc.textContent=m.guidance; c.append(desc);
-        const of=document.createElement('label'); of.className='prayer'; of.innerHTML=`<input type=checkbox> ${prayers[1].text}`; c.append(of);
-        for(let i=0;i<10;i++){ const hm=document.createElement('label'); hm.className='prayer'; hm.innerHTML=`<input type=checkbox> ${prayers[2].text}`; c.append(hm); }
-        const gb=document.createElement('label'); gb.className='prayer'; gb.innerHTML=`<input type=checkbox> ${prayers[3].text}`; c.append(gb);
-        const fp=document.createElement('label'); fp.className='prayer'; fp.innerHTML=`<input type=checkbox> ${prayers[4].text}`; c.append(fp);
-      });
-      const end=[prayers[5],prayers[6]];
-      end.forEach(p=>{ const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox> ${p.text}`; document.getElementById('prayerContainer').append(lbl); });
-    }
+const sacredHeartData = {
+  consecration: `O most holy Heart of Jesus, fountain of every blessing... Amen.`,
+  prayer: `O most holy Heart of Jesus, fountain of every blessing... Amen.`,
+  litany: [
+    `Heart of Jesus, Son of the Eternal Father, have mercy on us.`,
+    `Heart of Jesus, formed by the Holy Spirit, have mercy on us.`,
+    /* 43 more invocations */
+  ],
+  reparation: `Look down, O Heart of love, and behold the openings... Amen.`,
+  firstFriday: `First Friday Devotions: Attend Mass and Communion on nine consecutive First Fridays.`
+};
 
-    function renderDivineMercy(){
-      const c=document.getElementById('prayerContainer');
-      document.getElementById('instructions').textContent = divineMercyData.openingPrayers.join(' ');
-      const title=document.createElement('div'); title.className='section-title'; title.textContent='Opening Prayers'; c.append(title);
-      divineMercyData.openingPrayers.forEach(text=>{ const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox> ${text}`; c.append(lbl); });
-      for(let d=1; d<=5; d++){
-        const decTitle=document.createElement('div'); decTitle.className='section-title'; decTitle.textContent=`Decade ${d}`; c.append(decTitle);
-        const lb=document.createElement('label'); lb.className='prayer'; lb.innerHTML=`<input type=checkbox> ${divineMercyData.largeBead}`; c.append(lb);
-        for(let i=0;i<10;i++){ const sb=document.createElement('label'); sb.className='prayer'; sb.innerHTML=`<input type=checkbox> ${divineMercyData.smallBead}`; c.append(sb); }
-      }
-      const closeTitle=document.createElement('div'); closeTitle.className='section-title'; closeTitle.textContent='Closing Prayers'; c.append(closeTitle);
-      divineMercyData.closingPrayers.forEach(text=>{ const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox> ${text}`; c.append(lbl); });
-    }
+// UI Handlers
+const modal = document.getElementById('modal');
+const prayerPage = document.getElementById('prayerPage');
+const content = document.getElementById('content');
 
-    function renderSacredHeart(){
-      const c=document.getElementById('prayerContainer');
-      document.getElementById('instructions').textContent = 'Meditate on Christ’s love revealed through His Sacred Heart.';
-      // Consecration
-      const consTitle=document.createElement('div'); consTitle.className='section-title'; consTitle.textContent='Act of Consecration'; c.append(consTitle);
-      const consLbl=document.createElement('label'); consLbl.className='prayer'; consLbl.innerHTML=`<input type=checkbox> ${sacredHeartData.actConsecration}`; c.append(consLbl);
-      // Prayer
-      const prTitle=document.createElement('div'); prTitle.className='section-title'; prTitle.textContent='Prayer to the Sacred Heart'; c.append(prTitle);
-      const prLbl=document.createElement('label'); prLbl.className='prayer'; prLbl.innerHTML=`<input type=checkbox> ${sacredHeartData.prayer}`; c.append(prLbl);
-      // Litany
-      const litTitle=document.createElement('div'); litTitle.className='section-title'; litTitle.textContent='Litany of the Sacred Heart'; c.append(litTitle);
-      sacredHeartData.litany.forEach((inv,i)=>{ const lbl=document.createElement('label'); lbl.className='prayer'; lbl.innerHTML=`<input type=checkbox> ${inv}`; c.append(lbl); });
-      // Reparation
-      const repTitle=document.createElement('div'); repTitle.className='section-title'; repTitle.textContent='Act of Reparation'; c.append(repTitle);
-      const repLbl=document.createElement('label'); repLbl.className='prayer'; repLbl.innerHTML=`<input type=checkbox> ${sacredHeartData.actReparation}`; c.append(repLbl);
-      // First Friday
-      const ffTitle=document.createElement('div'); ffTitle.className='section-title'; ffTitle.textContent='First Friday Devotions'; c.append(ffTitle);
-      const ffLbl=document.createElement('label'); ffLbl.className='prayer'; ffLbl.innerHTML=`<input type=checkbox> ${sacredHeartData.firstFriday}`; c.append(ffLbl);
-    }
+function showPrayer(type) {
+  // display prayerPage
+  modal.style.display = 'none';
+  prayerPage.style.display = 'block';
+  document.getElementById('switchSelect').value = type;
+  render(type);
+}
 
-    document.addEventListener('DOMContentLoaded',()=>renderRosary());
-  </script>
+function render(type) {
+  content.innerHTML = '';
+  if (type === 'rosary') renderRosary();
+  if (type === 'divineMercy') renderDivineMercy();
+  if (type === 'sacredHeart') renderSacredHeart();
+}
+
+document.getElementById('startBtn').onclick = () => {
+  const t = document.getElementById('prayerSelect').value;
+  showPrayer(t);
+};
+
+document.getElementById('switchSelect').onchange = function() {
+  render(this.value);
+};
+
+// Render functions
+function renderRosary() {
+  // Core prayers
+  rosaryData.prayers.forEach(text => appendPrayer(text));
+  // Mysteries
+  const key = getTodayMystery();
+  appendSection(`Mysteries of the ${capitalize(key)}`);
+  rosaryData.mysteries[key].forEach(m => {
+    appendSection(m.title);
+    appendInstruction(m.guidance);
+    appendPrayer(rosaryData.prayers[1]); // Our Father
+    for (let i=0;i<10;i++) appendPrayer(rosaryData.prayers[2]); // Hail Mary
+    appendPrayer(rosaryData.prayers[3]); // Glory Be
+    appendPrayer(rosaryData.prayers[4]); // Fatima
+  });
+  appendPrayer(rosaryData.hailHolyQueen);
+  appendPrayer(rosaryData.finalPrayer);
+}
+
+function renderDivineMercy() {
+  divineMercyData.opening.forEach(text => appendPrayer(text));
+  appendPrayer(divineMercyData.creed);
+  appendPrayer(divineMercyData.ourFather);
+  appendPrayer(divineMercyData.hailMary);
+  for (let d=1; d<=5; d++) {
+    appendSection(`Decade ${d}`);
+    appendPrayer(divineMercyData.decade.large);
+    for (let i=0;i<10;i++) appendPrayer(divineMercyData.decade.small);
+  }
+  divineMercyData.closing.forEach(text => appendPrayer(text));
+}
+
+function renderSacredHeart() {
+  appendPrayer(sacredHeartData.consecration);
+  appendPrayer(sacredHeartData.prayer);
+  appendSection('Litany of the Sacred Heart');
+  sacredHeartData.litany.forEach(inv => appendPrayer(inv));
+  appendPrayer(sacredHeartData.reparation);
+  appendPrayer(sacredHeartData.firstFriday);
+}
+
+// Helpers
+function appendSection(title) {
+  const d = document.createElement('div'); d.className='section-title'; d.textContent=title; content.appendChild(d);
+}
+function appendInstruction(text) {
+  const p = document.createElement('div'); p.className='prayer'; p.textContent=text; content.appendChild(p);
+}
+function appendPrayer(text) {
+  const lbl = document.createElement('label'); lbl.className='prayer';
+  lbl.innerHTML = `<input type='checkbox'/> ${text}`;
+  content.appendChild(lbl);
+}
+function getTodayMystery() {
+  const day = new Date().toLocaleDateString('en-US',{weekday:'long'});
+  if (day==='Thursday') return 'luminous';
+  if (day==='Tuesday'||day==='Friday') return 'sorrowful';
+  if (day==='Wednesday'||day==='Sunday') return 'glorious';
+  return 'joyful';
+}
+function capitalize(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+
+// Show modal on load
+window.onload = () => { modal.style.display = 'flex'; };
+</script>
 </body>
 </html>
