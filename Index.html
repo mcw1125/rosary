@@ -1,1177 +1,620 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catholic Prayer Guide & Tracker</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catholic Prayer Guide & Tracker</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Georgia', serif;
+      line-height: 1.6;
+      color:#333;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      min-height:100vh;
+    }
+    .container {
+      max-width:800px; margin:0 auto; padding:20px;
+      background:#fff; min-height:100vh; box-shadow:0 0 20px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align:center; margin-bottom:30px; padding:20px 0;
+      border-bottom:3px solid #8B4513;
+    }
+    .header h1 { color:#8B4513; font-size:2.2em; margin-bottom:10px; }
 
-        body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
+    .prayer-selector { margin-bottom:20px; text-align:center; }
+    .prayer-selector select {
+      padding:12px 20px; font-size:16px; border:2px solid #8B4513;
+      border-radius:8px; background:#fff; color:#8B4513; font-weight:bold;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
+    .mystery-selector { margin-bottom:30px; text-align:center; }
+    .mystery-selector select {
+      padding:10px 15px; font-size:14px; border:2px solid #666;
+      border-radius:6px; background:#fff;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 3px solid #8B4513;
-        }
+    .prayer-section { display:none; margin-bottom:30px; }
+    .prayer-section.active { display:block; }
 
-        .header h1 {
-            color: #8B4513;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
+    .section-title {
+      color:#8B4513; font-size:1.8em; text-align:center; margin-bottom:20px;
+      padding:15px; background:#f8f4e6; border-radius:10px; border:2px solid #8B4513;
+    }
 
-        /* Daily Readings widget (added) */
-        #daily-readings {
-            margin: 16px 0 24px;
-            text-align: center;
-        }
-        #daily-readings a { color: #8B4513; text-decoration: underline; }
+    .instructions {
+      background:#fff8dc; padding:20px; border-radius:10px; margin-bottom:25px;
+      border-left:5px solid #8B4513;
+    }
+    .instructions h3 { color:#8B4513; margin-bottom:15px; font-size:1.3em; }
+    .instructions ol, .instructions ul { margin-left:20px; }
+    .instructions li { margin-bottom:8px; }
 
-        .prayer-selector {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    .mystery-group {
+      margin-bottom:40px; border:2px solid #ddd; border-radius:10px;
+      padding:20px; background:#fafafa;
+    }
+    .mystery-title {
+      color:#8B4513; font-size:1.4em; margin-bottom:15px; text-align:center; font-weight:bold;
+    }
+    .mystery-description {
+      background:#f0f8ff; padding:15px; border-radius:8px; margin-bottom:20px;
+      border-left:4px solid #4682b4;
+    }
+    .meditation-instructions {
+      background:#f5f5dc; padding:15px; border-radius:8px; margin-bottom:20px;
+      border-left:4px solid #daa520;
+    }
+    .meditation-instructions h4 { color:#8B4513; margin-bottom:10px; }
 
-        .prayer-selector select {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #8B4513;
-            border-radius: 8px;
-            background: white;
-            color: #8B4513;
-            font-weight: bold;
-        }
+    .prayer-item {
+      background:#fff; margin-bottom:15px; padding:15px; border-radius:8px;
+      border:1px solid #ddd; box-shadow:0 2px 4px rgba(0,0,0,0.1);
+    }
+    .prayer-checkbox { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+    .prayer-checkbox input[type="checkbox"] { margin-top:4px; transform:scale(1.2); }
+    .prayer-text { flex:1; font-style:italic; color:#444; line-height:1.7; }
+    .prayer-label { font-weight:bold; color:#8B4513; margin-bottom:8px; display:block; }
+    .repetition-note { font-size:0.9em; color:#666; margin-top:8px; }
 
-        .mystery-selector {
-            margin-bottom: 30px;
-            text-align: center;
-        }
+    /* Modal */
+    .modal {
+      display:flex; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); align-items:center; justify-content:center;
+    }
+    .modal-content {
+      background:#fff; padding:30px; border-radius:15px; text-align:center;
+      max-width:400px; width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    }
+    .modal h2 { color:#8B4513; margin-bottom:20px; font-size:1.6em; }
+    .modal select {
+      padding:15px; font-size:16px; border:2px solid #8B4513; border-radius:8px;
+      width:100%; margin-bottom:20px; background:#fff;
+    }
+    .modal button {
+      padding:12px 30px; font-size:16px; background:#8B4513; color:#fff;
+      border:none; border-radius:8px; cursor:pointer; font-weight:bold;
+    }
+    .modal button:hover { background:#654321; }
 
-        .mystery-selector select {
-            padding: 10px 15px;
-            font-size: 14px;
-            border: 2px solid #666;
-            border-radius: 6px;
-            background: white;
-        }
+    /* Daily Readings widget (now lives inside its own section) */
+    #dailyReadingsWidget { margin:16px 0 24px; text-align:center; }
+    #dailyReadingsWidget a { color:#8B4513; text-decoration:underline; }
+    #readingSelect {
+      padding:10px 15px; border:2px solid #8B4513; border-radius:8px;
+      margin-left:8px; min-width:240px;
+    }
+    #openReadingBtn {
+      padding:10px 16px; margin-left:8px; background:#8B4513; color:#fff;
+      border:none; border-radius:8px; font-weight:bold;
+    }
 
-        .prayer-section {
-            display: none;
-            margin-bottom: 30px;
-        }
-
-        .prayer-section.active {
-            display: block;
-        }
-
-        .section-title {
-            color: #8B4513;
-            font-size: 1.8em;
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f4e6;
-            border-radius: 10px;
-            border: 2px solid #8B4513;
-        }
-
-        .instructions {
-            background: #fff8dc;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 5px solid #8B4513;
-        }
-
-        .instructions h3 {
-            color: #8B4513;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .instructions ol, .instructions ul {
-            margin-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
-        }
-
-        .mystery-group {
-            margin-bottom: 40px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            background: #fafafa;
-        }
-
-        .mystery-title {
-            color: #8B4513;
-            font-size: 1.4em;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .mystery-description {
-            background: #f0f8ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #4682b4;
-        }
-
-        .meditation-instructions {
-            background: #f5f5dc;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #daa520;
-        }
-
-        .meditation-instructions h4 {
-            color: #8B4513;
-            margin-bottom: 10px;
-        }
-
-        .prayer-item {
-            background: white;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .prayer-checkbox {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .prayer-checkbox input[type="checkbox"] {
-            margin-top: 4px;
-            transform: scale(1.2);
-        }
-
-        .prayer-text {
-            flex: 1;
-            font-style: italic;
-            color: #444;
-            line-height: 1.7;
-        }
-
-        .prayer-label {
-            font-weight: bold;
-            color: #8B4513;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .repetition-note {
-            font-size: 0.9em;
-            color: #666;
-            font-style: normal;
-            margin-top: 8px;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: flex;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .modal h2 {
-            color: #8B4513;
-            margin-bottom: 20px;
-            font-size: 1.6em;
-        }
-
-        .modal select {
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #8B4513;
-            border-radius: 8px;
-            width: 100%;
-            margin-bottom: 20px;
-            background: white;
-        }
-
-        .modal button {
-            padding: 12px 30px;
-            font-size: 16px;
-            background: #8B4513;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .modal button:hover {
-            background: #654321;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .prayer-item {
-                padding: 10px;
-            }
-        }
-    </style>
+    @media (max-width:600px){
+      .container{ padding:10px; }
+      .header h1{ font-size:1.8em; }
+      .prayer-item{ padding:10px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Modal for prayer selection -->
-    <div id="prayerModal" class="modal">
-        <div class="modal-content">
-            <h2>Choose Your Prayer</h2>
-            <select id="modalPrayerSelect">
-                <option value="rosary">The Holy Rosary</option>
-                <option value="divine-mercy">Divine Mercy Chaplet</option>
-                <option value="st-benedict">St. Benedict Chaplet</option>
-            </select>
-            <button onclick="startPrayer()">Begin Prayer</button>
-        </div>
+  <!-- Modal for prayer selection -->
+  <div id="prayerModal" class="modal">
+    <div class="modal-content">
+      <h2>Choose Your Prayer</h2>
+      <select id="modalPrayerSelect">
+        <option value="rosary">The Holy Rosary</option>
+        <option value="divine-mercy">Divine Mercy Chaplet</option>
+        <option value="st-benedict">St. Benedict Chaplet</option>
+        <option value="daily-readings">Daily Readings</option>
+      </select>
+      <button onclick="startPrayer()">Begin Prayer</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <h1>✝ Catholic Prayer Guide & Tracker ✝</h1>
+      <p>A spiritual companion for your daily devotions</p>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1>✝ Catholic Prayer Guide & Tracker ✝</h1>
-            <p>A spiritual companion for your daily devotions</p>
-        </div>
-
-        <!-- Daily Readings widget (added) -->
-        <div id="daily-readings">
-          <label for="readingSelect"><strong>Daily Mass Readings:</strong></label>
-          <select id="readingSelect" style="padding:10px 15px; border:2px solid #8B4513; border-radius:8px; margin-left:8px; min-width:240px;">
-            <option>Loading today’s readings…</option>
-          </select>
-          <button id="openReadingBtn" style="padding:10px 16px; margin-left:8px; background:#8B4513; color:#fff; border:none; border-radius:8px; font-weight:bold;">
-            Open
-          </button>
-          <div id="readingsCredit" class="repetition-note" style="margin-top:6px;"></div>
-
-          <!-- Hidden placeholders used by Universalis JSONP -->
-          <div id="Universalis_Mass_R1.source" style="display:none"></div>
-          <div id="Universalis_Mass_R1.text"   style="display:none"></div>
-          <div id="Universalis_Mass_Ps.source" style="display:none"></div>
-          <div id="Universalis_Mass_Ps.text"   style="display:none"></div>
-          <div id="Universalis_Mass_R2.source" style="display:none"></div>
-          <div id="Universalis_Mass_R2.text"   style="display:none"></div>
-          <div id="Universalis_Mass_G.source"  style="display:none"></div>
-          <div id="Universalis_Mass_G.text"    style="display:none"></div>
-          <div id="Universalis_copyright.text" style="display:none"></div>
-        </div>
-
-        <div class="prayer-selector">
-            <select id="prayerTypeSelect" onchange="switchPrayer()">
-                <option value="rosary">The Holy Rosary</option>
-                <option value="divine-mercy">Divine Mercy Chaplet</option>
-                <option value="st-benedict">St. Benedict Chaplet</option>
-            </select>
-        </div>
-
-        <!-- Rosary Section -->
-        <div id="rosary" class="prayer-section">
-            <div class="section-title">The Holy Rosary</div>
-            
-            <div class="mystery-selector">
-                <label for="mysterySelect"><strong>Select Mysteries:</strong></label>
-                <select id="mysterySelect" onchange="switchMystery()">
-                    <option value="joyful">Joyful Mysteries (Monday & Saturday)</option>
-                    <option value="sorrowful">Sorrowful Mysteries (Tuesday & Friday)</option>
-                    <option value="glorious">Glorious Mysteries (Wednesday & Sunday)</option>
-                    <option value="luminous">Luminous Mysteries (Thursday)</option>
-                </select>
-            </div>
-
-            <div class="instructions">
-                <h3>How to Pray the Rosary</h3>
-                <ol>
-                    <li>Begin with the Sign of the Cross and the Apostles' Creed</li>
-                    <li>Pray one Our Father, three Hail Marys, and one Glory Be</li>
-                    <li>For each of the five mysteries: announce the mystery, pray one Our Father, ten Hail Marys, one Glory Be, and the Fatima Prayer</li>
-                    <li>Conclude with the Hail Holy Queen and final prayer</li>
-                </ol>
-            </div>
-
-            <div id="rosaryPrayers"></div>
-        </div>
-
-        <!-- Divine Mercy Section -->
-        <div id="divine-mercy" class="prayer-section">
-            <div class="section-title">Divine Mercy Chaplet</div>
-            
-            <div class="instructions">
-                <h3>How to Pray the Divine Mercy Chaplet</h3>
-                <ol>
-                    <li>Begin with the Sign of the Cross</li>
-                    <li>Pray one Our Father, one Hail Mary, and the Apostles' Creed</li>
-                    <li>On the large bead before each decade, pray the "Eternal Father" prayer</li>
-                    <li>On the small beads of each decade, pray "For the sake of His sorrowful Passion..."</li>
-                    <li>Repeat for all five decades</li>
-                    <li>Conclude with the closing prayer three times</li>
-                </ol>
-                <p><strong>Best prayed at 3:00 PM (the Hour of Mercy) or anytime with devotion.</strong></p>
-            </div>
-
-            <div id="divineMercyPrayers"></div>
-        </div>
-
-        <!-- St. Benedict Section -->
-        <div id="st-benedict" class="prayer-section">
-            <div class="section-title">St. Benedict Chaplet</div>
-            
-            <div class="instructions">
-                <h3>How to Pray the St. Benedict Chaplet</h3>
-                <ol>
-                    <li>Begin with the Sign of the Cross</li>
-                    <li>Pray the opening prayer to St. Benedict</li>
-                    <li>On the large beads, pray the Our Father</li>
-                    <li>On the small beads, pray "Blessed St. Benedict..."</li>
-                    <li>Repeat for all four decades</li>
-                    <li>Conclude with the closing prayer</li>
-                </ol>
-                <p><strong>This chaplet asks for St. Benedict's protection against evil and temptation.</strong></p>
-            </div>
-
-            <div id="stBenedictPrayers"></div>
-        </div>
+    <!-- Main selector now includes Daily Readings -->
+    <div class="prayer-selector">
+      <select id="prayerTypeSelect" onchange="switchPrayer()">
+        <option value="rosary">The Holy Rosary</option>
+        <option value="divine-mercy">Divine Mercy Chaplet</option>
+        <option value="st-benedict">St. Benedict Chaplet</option>
+        <option value="daily-readings">Daily Readings</option>
+      </select>
     </div>
 
-    <script>
-        // Prayer data
-        const prayerData = {
-            rosary: {
-                opening: [
-                    {
-                        label: "Sign of the Cross",
-                        text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                    },
-                    {
-                        label: "Apostles' Creed",
-                        text: "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen."
-                    },
-                    {
-                        label: "Our Father",
-                        text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
-                    },
-                    {
-                        label: "Hail Mary (1st)",
-                        text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
-                    },
-                    {
-                        label: "Hail Mary (2nd)",
-                        text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
-                    },
-                    {
-                        label: "Hail Mary (3rd)",
-                        text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
-                    },
-                    {
-                        label: "Glory Be",
-                        text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen."
-                    }
-                ],
-                closing: [
-                    {
-                        label: "Hail Holy Queen",
-                        text: "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary."
-                    },
-                    {
-                        label: "Final Prayer",
-                        text: "O God, whose only-begotten Son, by His life, death and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen."
-                    },
-                    {
-                        label: "Sign of the Cross",
-                        text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                    }
-                ],
-                mysteries: {
-                    joyful: [
-                        {
-                            title: "First Joyful Mystery: The Annunciation",
-                            description: "The Angel Gabriel announces to Mary that she will conceive and bear the Son of God.",
-                            verse: "Luke 1:26-38",
-                            meditation: "Reflect on Mary's humility and trust in God's plan. Consider how we can say 'yes' to God in our own lives, even when His will seems difficult to understand."
-                        },
-                        {
-                            title: "Second Joyful Mystery: The Visitation",
-                            description: "Mary visits her cousin Elizabeth, who is pregnant with John the Baptist.",
-                            verse: "Luke 1:39-45",
-                            meditation: "Contemplate Mary's charity in serving others despite her own condition. Think about how we can bring Christ to others through our actions and presence."
-                        },
-                        {
-                            title: "Third Joyful Mystery: The Nativity",
-                            description: "Jesus is born in Bethlehem and laid in a manger.",
-                            verse: "Luke 2:1-20",
-                            meditation: "Meditate on the humility of God becoming man in such simple circumstances. Consider the poverty and simplicity that marked Christ's birth."
-                        },
-                        {
-                            title: "Fourth Joyful Mystery: The Presentation",
-                            description: "Mary and Joseph present the infant Jesus in the Temple according to Jewish law.",
-                            verse: "Luke 2:22-38",
-                            meditation: "Reflect on Mary and Joseph's obedience to God's law and Simeon's prophecy. Think about how we can dedicate our lives to God's service."
-                        },
-                        {
-                            title: "Fifth Joyful Mystery: Finding Jesus in the Temple",
-                            description: "After three days of searching, Mary and Joseph find the twelve-year-old Jesus teaching in the Temple.",
-                            verse: "Luke 2:41-52",
-                            meditation: "Consider Mary's anguish and joy. Reflect on how we sometimes lose Jesus through sin and the joy of finding Him again through repentance."
-                        }
-                    ],
-                    sorrowful: [
-                        {
-                            title: "First Sorrowful Mystery: The Agony in the Garden",
-                            description: "Jesus prays in the Garden of Gethsemane and accepts His Father's will.",
-                            verse: "Matthew 26:36-46",
-                            meditation: "Contemplate Jesus's human fear and divine obedience. Reflect on accepting God's will in times of difficulty and the importance of prayer in times of trial."
-                        },
-                        {
-                            title: "Second Sorrowful Mystery: The Scourging at the Pillar",
-                            description: "Jesus is brutally whipped by Roman soldiers.",
-                            verse: "John 19:1",
-                            meditation: "Meditate on Jesus's physical suffering endured for our sins. Consider how our sins contribute to His pain and our need for repentance."
-                        },
-                        {
-                            title: "Third Sorrowful Mystery: The Crowning with Thorns",
-                            description: "Soldiers mock Jesus by placing a crown of thorns on His head.",
-                            verse: "John 19:2-3",
-                            meditation: "Reflect on the mockery Jesus endured and His patience in suffering. Think about how we can bear insults and humiliation with grace."
-                        },
-                        {
-                            title: "Fourth Sorrowful Mystery: The Carrying of the Cross",
-                            description: "Jesus carries His cross to Calvary, falling three times under its weight.",
-                            verse: "Luke 23:26-32",
-                            meditation: "Consider Jesus's determination to complete His mission despite exhaustion. Reflect on how we can persevere in carrying our own crosses."
-                        },
-                        {
-                            title: "Fifth Sorrowful Mystery: The Crucifixion",
-                            description: "Jesus is nailed to the cross and dies for our salvation.",
-                            verse: "Luke 23:33-46",
-                            meditation: "Meditate on the ultimate sacrifice of love. Contemplate Jesus's final words and Mary's sorrow. Consider the depth of God's love for humanity."
-                        }
-                    ],
-                    glorious: [
-                        {
-                            title: "First Glorious Mystery: The Resurrection",
-                            description: "Jesus rises from the dead on Easter Sunday morning.",
-                            verse: "Luke 24:1-12",
-                            meditation: "Rejoice in Christ's victory over death and sin. Reflect on the hope this gives us for our own resurrection and eternal life."
-                        },
-                        {
-                            title: "Second Glorious Mystery: The Ascension",
-                            description: "Jesus ascends into heaven forty days after His resurrection.",
-                            verse: "Acts 1:6-11",
-                            meditation: "Consider how Jesus prepares a place for us in heaven. Reflect on our call to focus on eternal rather than merely earthly concerns."
-                        },
-                        {
-                            title: "Third Glorious Mystery: The Descent of the Holy Spirit",
-                            description: "The Holy Spirit comes upon the Apostles at Pentecost.",
-                            verse: "Acts 2:1-4",
-                            meditation: "Contemplate the gifts and fruits of the Holy Spirit in our lives. Pray for courage to spread the Gospel as the Apostles did."
-                        },
-                        {
-                            title: "Fourth Glorious Mystery: The Assumption",
-                            description: "Mary is taken up body and soul into heavenly glory.",
-                            verse: "Revelation 12:1",
-                            meditation: "Reflect on Mary's reward for her faithfulness. Consider how our bodies are temples of the Holy Spirit and will share in resurrection."
-                        },
-                        {
-                            title: "Fifth Glorious Mystery: The Coronation of Mary",
-                            description: "Mary is crowned Queen of Heaven and Earth.",
-                            verse: "Revelation 12:1",
-                            meditation: "Contemplate Mary's queenship and her role as our Mother and intercessor. Ask for her help in growing closer to her Son."
-                        }
-                    ],
-                    luminous: [
-                        {
-                            title: "First Luminous Mystery: The Baptism of Jesus",
-                            description: "Jesus is baptized by John in the Jordan River.",
-                            verse: "Matthew 3:13-17",
-                            meditation: "Reflect on Jesus's humility in accepting baptism and the Trinity's revelation. Consider the graces received in our own baptism."
-                        },
-                        {
-                            title: "Second Luminous Mystery: The Wedding at Cana",
-                            description: "Jesus performs His first miracle at Mary's request.",
-                            verse: "John 2:1-11",
-                            meditation: "Contemplate Mary's intercession and her instruction to 'do whatever He tells you.' Reflect on Mary's role in our spiritual lives."
-                        },
-                        {
-                            title: "Third Luminous Mystery: The Proclamation of the Kingdom",
-                            description: "Jesus preaches the Gospel and calls all to repentance.",
-                            verse: "Mark 1:14-15",
-                            meditation: "Meditate on Jesus's teachings and our call to conversion. Consider how we can proclaim the Gospel through our words and actions."
-                        },
-                        {
-                            title: "Fourth Luminous Mystery: The Transfiguration",
-                            description: "Jesus is transfigured before Peter, James, and John on Mount Tabor.",
-                            verse: "Matthew 17:1-9",
-                            meditation: "Contemplate Jesus's divine glory revealed to strengthen the Apostles. Reflect on moments when God has revealed Himself in your life."
-                        },
-                        {
-                            title: "Fifth Luminous Mystery: The Institution of the Eucharist",
-                            description: "Jesus institutes the Eucharist at the Last Supper.",
-                            verse: "Luke 22:14-20",
-                            meditation: "Meditate on Jesus's gift of Himself in the Eucharist. Consider the great love shown in this sacrament and our response to it."
-                        }
-                    ]
-                }
-            },
-            divineMercy: [
-                {
-                    label: "Sign of the Cross",
-                    text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                },
-                {
-                    label: "Our Father",
-                    text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
-                },
-                {
-                    label: "Hail Mary",
-                    text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
-                },
-                {
-                    label: "Apostles' Creed",
-                    text: "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen."
-                },
-                {
-                    label: "Eternal Father Prayer (1st Decade)",
-                    text: "Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 1)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 2)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 3)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 4)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 5)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 6)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 7)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 8)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 9)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (1st - 10)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Eternal Father Prayer (2nd Decade)",
-                    text: "Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 1)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 2)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 3)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 4)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 5)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 6)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 7)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 8)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 9)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (2nd - 10)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Eternal Father Prayer (3rd Decade)",
-                    text: "Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 1)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 2)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 3)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 4)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 5)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 6)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 7)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 8)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 9)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (3rd - 10)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Eternal Father Prayer (4th Decade)",
-                    text: "Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 1)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 2)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 3)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 4)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 5)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 6)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 7)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 8)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 9)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (4th - 10)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Eternal Father Prayer (5th Decade)",
-                    text: "Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 1)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 2)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 3)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 4)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 5)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 6)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 7)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 8)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 9)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "For the sake of His sorrowful Passion (5th - 10)",
-                    text: "For the sake of His sorrowful Passion, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Closing Prayer (1st time)",
-                    text: "Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Closing Prayer (2nd time)",
-                    text: "Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Closing Prayer (3rd time)",
-                    text: "Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."
-                },
-                {
-                    label: "Final Prayer",
-                    text: "Eternal God, in whom mercy is endless and the treasury of compassion inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your holy will, which is Love and Mercy itself. Amen."
-                },
-                {
-                    label: "Sign of the Cross",
-                    text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                }
-            ],
-            stBenedict: [
-                {
-                    label: "Sign of the Cross",
-                    text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                },
-                {
-                    label: "Opening Prayer",
-                    text: "O glorious St. Benedict, sublime model of virtue, pure vessel of God's grace! Behold me, humbly prostrate before you. I implore your loving heart to pray for me before the throne of God. To you I have recourse in all the dangers which daily surround me. Shield me against my enemies, inspire me to imitate you in all things. May your blessing be with me always, so that I may see and serve God as you did, with perfect fidelity and zeal unto death. Help me by your powerful intercession to gain the crown of everlasting glory. Amen."
-                },
-                {
-                    label: "Our Father",
-                    text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
-                },
-                {
-                    label: "Blessed St. Benedict (1)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (2)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (3)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (4)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (5)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (6)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (7)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (8)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (9)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Blessed St. Benedict (10)",
-                    text: "Blessed St. Benedict, father of monks and guide to holiness, pray for us."
-                },
-                {
-                    label: "Closing Prayer",
-                    text: "Gracious St. Benedict, glorious father of countless monks, I venerate you as a special patron and protector. I place myself and all my concerns under your powerful protection. Preserve me from all danger to soul and body. Obtain for me from God the graces I need to serve Him faithfully on earth so that I may be found worthy to praise Him eternally in heaven. Through Christ our Lord. Amen."
-                },
-                {
-                    label: "Prayer to St. Benedict Against Evil",
-                    text: "The Holy Cross be my light! Let not the dragon be my guide! Begone Satan! Never tempt me with vain things! What you offer me is evil. Drink the poison yourself! St. Benedict, pray for us that we may be made worthy of the promises of Christ."
-                },
-                {
-                    label: "Sign of the Cross",
-                    text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
-                }
-            ]
-        };
+    <!-- Rosary Section -->
+    <div id="rosary" class="prayer-section">
+      <div class="section-title">The Holy Rosary</div>
 
-        // State management
-        let currentPrayerType = 'rosary';
-        let currentMystery = getTodaysMystery();
-        let checkedPrayers = {};
+      <div class="mystery-selector">
+        <label for="mysterySelect"><strong>Select Mysteries:</strong></label>
+        <select id="mysterySelect" onchange="switchMystery()">
+          <option value="joyful">Joyful Mysteries (Monday & Saturday)</option>
+          <option value="sorrowful">Sorrowful Mysteries (Tuesday & Friday)</option>
+          <option value="glorious">Glorious Mysteries (Wednesday & Sunday)</option>
+          <option value="luminous">Luminous Mysteries (Thursday)</option>
+        </select>
+      </div>
 
-        // Get today's mystery based on day of week
-        function getTodaysMystery() {
-            const dayOfWeek = new Date().getDay();
-            switch (dayOfWeek) {
-                case 1: case 6: return 'joyful'; // Monday, Saturday
-                case 2: case 5: return 'sorrowful'; // Tuesday, Friday  
-                case 0: case 3: return 'glorious'; // Sunday, Wednesday
-                case 4: return 'luminous'; // Thursday
-                default: return 'joyful';
-            }
+      <div class="instructions">
+        <h3>How to Pray the Rosary</h3>
+        <ol>
+          <li>Begin with the Sign of the Cross and the Apostles' Creed</li>
+          <li>Pray one Our Father, three Hail Marys, and one Glory Be</li>
+          <li>For each of the five mysteries: announce the mystery, pray one Our Father, ten Hail Marys, one Glory Be, and the Fatima Prayer</li>
+          <li>Conclude with the Hail Holy Queen and final prayer</li>
+        </ol>
+      </div>
+
+      <div id="rosaryPrayers"></div>
+    </div>
+
+    <!-- Divine Mercy Section -->
+    <div id="divine-mercy" class="prayer-section">
+      <div class="section-title">Divine Mercy Chaplet</div>
+      <div class="instructions">
+        <h3>How to Pray the Divine Mercy Chaplet</h3>
+        <ol>
+          <li>Begin with the Sign of the Cross</li>
+          <li>Pray one Our Father, one Hail Mary, and the Apostles' Creed</li>
+          <li>On the large bead before each decade, pray the "Eternal Father" prayer</li>
+          <li>On the small beads of each decade, pray "For the sake of His sorrowful Passion..."</li>
+          <li>Repeat for all five decades</li>
+          <li>Conclude with the closing prayer three times</li>
+        </ol>
+        <p><strong>Best prayed at 3:00 PM (the Hour of Mercy) or anytime with devotion.</strong></p>
+      </div>
+      <div id="divineMercyPrayers"></div>
+    </div>
+
+    <!-- St. Benedict Section -->
+    <div id="st-benedict" class="prayer-section">
+      <div class="section-title">St. Benedict Chaplet</div>
+      <div class="instructions">
+        <h3>How to Pray the St. Benedict Chaplet</h3>
+        <ol>
+          <li>Begin with the Sign of the Cross</li>
+          <li>Pray the opening prayer to St. Benedict</li>
+          <li>On the large beads, pray the Our Father</li>
+          <li>On the small beads, pray "Blessed St. Benedict..."</li>
+          <li>Repeat for all four decades</li>
+          <li>Conclude with the closing prayer</li>
+        </ol>
+        <p><strong>This chaplet asks for St. Benedict's protection against evil and temptation.</strong></p>
+      </div>
+      <div id="stBenedictPrayers"></div>
+    </div>
+
+    <!-- Daily Readings Section (new, appears when selected) -->
+    <div id="daily-readings" class="prayer-section">
+      <div class="section-title">Daily Mass Readings</div>
+      <div class="instructions">
+        <h3>Today’s Readings</h3>
+        <p>Select a reading below. Text loads inline via Universalis; if blocked, use the links.</p>
+      </div>
+
+      <div id="dailyReadingsWidget">
+        <label for="readingSelect"><strong>Readings:</strong></label>
+        <select id="readingSelect">
+          <option>Loading today’s readings…</option>
+        </select>
+        <button id="openReadingBtn">Open</button>
+        <div id="readingsCredit" class="repetition-note"></div>
+
+        <!-- Hidden placeholders used by Universalis JSONP -->
+        <div id="Universalis_Mass_R1.source" style="display:none"></div>
+        <div id="Universalis_Mass_R1.text"   style="display:none"></div>
+        <div id="Universalis_Mass_Ps.source" style="display:none"></div>
+        <div id="Universalis_Mass_Ps.text"   style="display:none"></div>
+        <div id="Universalis_Mass_R2.source" style="display:none"></div>
+        <div id="Universalis_Mass_R2.text"   style="display:none"></div>
+        <div id="Universalis_Mass_G.source"  style="display:none"></div>
+        <div id="Universalis_Mass_G.text"    style="display:none"></div>
+        <div id="Universalis_copyright.text" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===============================
+    // Prayer data
+    // ===============================
+    const prayerData = {
+      rosary: {
+        opening: [
+          { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."},
+          { label:"Apostles' Creed", text:"I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen."},
+          { label:"Our Father", text:"Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."},
+          { label:"Hail Mary (1st)", text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."},
+          { label:"Hail Mary (2nd)", text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."},
+          { label:"Hail Mary (3rd)", text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."},
+          { label:"Glory Be", text:"Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen."}
+        ],
+        closing: [
+          { label:"Hail Holy Queen", text:"Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary."},
+          { label:"Final Prayer", text:"O God, whose only-begotten Son, by His life, death and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen."},
+          { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."}
+        ],
+        mysteries: {
+          joyful: [
+            { title:"First Joyful Mystery: The Annunciation", description:"The Angel Gabriel announces to Mary that she will conceive and bear the Son of God.", verse:"Luke 1:26-38", meditation:"Reflect on Mary's humility and trust in God's plan. Consider how we can say 'yes' to God in our own lives, even when His will seems difficult to understand."},
+            { title:"Second Joyful Mystery: The Visitation", description:"Mary visits her cousin Elizabeth, who is pregnant with John the Baptist.", verse:"Luke 1:39-45", meditation:"Contemplate Mary's charity in serving others despite her own condition. Think about how we can bring Christ to others through our actions and presence."},
+            { title:"Third Joyful Mystery: The Nativity", description:"Jesus is born in Bethlehem and laid in a manger.", verse:"Luke 2:1-20", meditation:"Meditate on the humility of God becoming man in such simple circumstances. Consider the poverty and simplicity that marked Christ's birth."},
+            { title:"Fourth Joyful Mystery: The Presentation", description:"Mary and Joseph present the infant Jesus in the Temple according to Jewish law.", verse:"Luke 2:22-38", meditation:"Reflect on Mary and Joseph's obedience to God's law and Simeon's prophecy. Think about how we can dedicate our lives to God's service."},
+            { title:"Fifth Joyful Mystery: Finding Jesus in the Temple", description:"After three days of searching, Mary and Joseph find the twelve-year-old Jesus teaching in the Temple.", verse:"Luke 2:41-52", meditation:"Consider Mary's anguish and joy. Reflect on how we sometimes lose Jesus through sin and the joy of finding Him again through repentance."}
+          ],
+          sorrowful: [
+            { title:"First Sorrowful Mystery: The Agony in the Garden", description:"Jesus prays in the Garden of Gethsemane and accepts His Father's will.", verse:"Matthew 26:36-46", meditation:"Contemplate Jesus's human fear and divine obedience. Reflect on accepting God's will in times of difficulty and the importance of prayer in times of trial."},
+            { title:"Second Sorrowful Mystery: The Scourging at the Pillar", description:"Jesus is brutally whipped by Roman soldiers.", verse:"John 19:1", meditation:"Meditate on Jesus's physical suffering endured for our sins. Consider how our sins contribute to His pain and our need for repentance."},
+            { title:"Third Sorrowful Mystery: The Crowning with Thorns", description:"Soldiers mock Jesus by placing a crown of thorns on His head.", verse:"John 19:2-3", meditation:"Reflect on the mockery Jesus endured and His patience in suffering. Think about how we can bear insults and humiliation with grace."},
+            { title:"Fourth Sorrowful Mystery: The Carrying of the Cross", description:"Jesus carries His cross to Calvary, falling three times under its weight.", verse:"Luke 23:26-32", meditation:"Consider Jesus's determination to complete His mission despite exhaustion. Reflect on how we can persevere in carrying our own crosses."},
+            { title:"Fifth Sorrowful Mystery: The Crucifixion", description:"Jesus is nailed to the cross and dies for our salvation.", verse:"Luke 23:33-46", meditation:"Meditate on the ultimate sacrifice of love. Contemplate Jesus's final words and Mary's sorrow. Consider the depth of God's love for humanity."}
+          ],
+          glorious: [
+            { title:"First Glorious Mystery: The Resurrection", description:"Jesus rises from the dead on Easter Sunday morning.", verse:"Luke 24:1-12", meditation:"Rejoice in Christ's victory over death and sin. Reflect on the hope this gives us for our own resurrection and eternal life."},
+            { title:"Second Glorious Mystery: The Ascension", description:"Jesus ascends into heaven forty days after His resurrection.", verse:"Acts 1:6-11", meditation:"Consider how Jesus prepares a place for us in heaven. Reflect on our call to focus on eternal rather than merely earthly concerns."},
+            { title:"Third Glorious Mystery: The Descent of the Holy Spirit", description:"The Holy Spirit comes upon the Apostles at Pentecost.", verse:"Acts 2:1-4", meditation:"Contemplate the gifts and fruits of the Holy Spirit in our lives. Pray for courage to spread the Gospel as the Apostles did."},
+            { title:"Fourth Glorious Mystery: The Assumption", description:"Mary is taken up body and soul into heavenly glory.", verse:"Revelation 12:1", meditation:"Reflect on Mary's reward for her faithfulness. Consider how our bodies are temples of the Holy Spirit and will share in resurrection."},
+            { title:"Fifth Glorious Mystery: The Coronation of Mary", description:"Mary is crowned Queen of Heaven and Earth.", verse:"Revelation 12:1", meditation:"Contemplate Mary's queenship and her role as our Mother and intercessor. Ask for her help in growing closer to her Son."}
+          ],
+          luminous: [
+            { title:"First Luminous Mystery: The Baptism of Jesus", description:"Jesus is baptized by John in the Jordan River.", verse:"Matthew 3:13-17", meditation:"Reflect on Jesus's humility in accepting baptism and the Trinity's revelation. Consider the graces received in our own baptism."},
+            { title:"Second Luminous Mystery: The Wedding at Cana", description:"Jesus performs His first miracle at Mary's request.", verse:"John 2:1-11", meditation:"Contemplate Mary's intercession and her instruction to 'do whatever He tells you.' Reflect on Mary's role in our spiritual lives."},
+            { title:"Third Luminous Mystery: The Proclamation of the Kingdom", description:"Jesus preaches the Gospel and calls all to repentance.", verse:"Mark 1:14-15", meditation:"Meditate on Jesus's teachings and our call to conversion. Consider how we can proclaim the Gospel through our words and actions."},
+            { title:"Fourth Luminous Mystery: The Transfiguration", description:"Jesus is transfigured before Peter, James, and John on Mount Tabor.", verse:"Matthew 17:1-9", meditation:"Contemplate Jesus's divine glory revealed to strengthen the Apostles. Reflect on moments when God has revealed Himself in your life."},
+            { title:"Fifth Luminous Mystery: The Institution of the Eucharist", description:"Jesus institutes the Eucharist at the Last Supper.", verse:"Luke 22:14-20", meditation:"Meditate on Jesus's gift of Himself in the Eucharist. Consider the great love shown in this sacrament and our response to it."}
+          ]
+        }
+      },
+      divineMercy: [
+        { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."},
+        { label:"Our Father", text:"Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."},
+        { label:"Hail Mary", text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."},
+        { label:"Apostles' Creed", text:"I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen."},
+        { label:"Eternal Father Prayer (1st Decade)", text:"Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 1)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 2)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 3)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 4)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 5)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 6)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 7)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 8)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 9)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (1st - 10)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"Eternal Father Prayer (2nd Decade)", text:"Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 1)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 2)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 3)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 4)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 5)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 6)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 7)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 8)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 9)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (2nd - 10)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"Eternal Father Prayer (3rd Decade)", text:"Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 1)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 2)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 3)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 4)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 5)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 6)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 7)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 8)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 9)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (3rd - 10)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"Eternal Father Prayer (4th Decade)", text:"Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 1)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 2)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 3)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 4)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 5)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 6)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 7)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 8)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 9)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (4th - 10)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"Eternal Father Prayer (5th Decade)", text:"Eternal Father, I offer You the Body and Blood, Soul and Divinity of Your dearly beloved Son, Our Lord Jesus Christ, in atonement for our sins and those of the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 1)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 2)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 3)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 4)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 5)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 6)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 7)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 8)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 9)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"For the sake of His sorrowful Passion (5th - 10)", text:"For the sake of His sorrowful Passion, have mercy on us and on the whole world."},
+        { label:"Closing Prayer (1st time)", text:"Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."},
+        { label:"Closing Prayer (2nd time)", text:"Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."},
+        { label:"Closing Prayer (3rd time)", text:"Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world."},
+        { label:"Final Prayer", text:"Eternal God, in whom mercy is endless and the treasury of compassion inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your holy will, which is Love and Mercy itself. Amen."},
+        { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."}
+      ],
+      stBenedict: [
+        { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."},
+        { label:"Opening Prayer", text:"O glorious St. Benedict, sublime model of virtue, pure vessel of God's grace! Behold me, humbly prostrate before you. I implore your loving heart to pray for me before the throne of God. To you I have recourse in all the dangers which daily surround me. Shield me against my enemies, inspire me to imitate you in all things. May your blessing be with me always, so that I may see and serve God as you did, with perfect fidelity and zeal unto death. Help me by your powerful intercession to gain the crown of everlasting glory. Amen."},
+        { label:"Our Father", text:"Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."},
+        { label:"Blessed St. Benedict (1)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (2)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (3)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (4)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (5)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (6)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (7)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (8)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (9)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Blessed St. Benedict (10)", text:"Blessed St. Benedict, father of monks and guide to holiness, pray for us."},
+        { label:"Closing Prayer", text:"Gracious St. Benedict, glorious father of countless monks, I venerate you as a special patron and protector. I place myself and all my concerns under your powerful protection. Preserve me from all danger to soul and body. Obtain for me from God the graces I need to serve Him faithfully on earth so that I may be found worthy to praise Him eternally in heaven. Through Christ our Lord. Amen."},
+        { label:"Prayer to St. Benedict Against Evil", text:"The Holy Cross be my light! Let not the dragon be my guide! Begone Satan! Never tempt me with vain things! What you offer me is evil. Drink the poison yourself! St. Benedict, pray for us that we may be made worthy of the promises of Christ."},
+        { label:"Sign of the Cross", text:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen."}
+      ]
+    };
+
+    // ===============================
+    // State & helpers
+    // ===============================
+    let currentPrayerType = 'rosary';
+    let currentMystery = getTodaysMystery();
+    let checkedPrayers = {};
+    let readingsInjected = false; // ensure JSONP is injected once
+
+    function getTodaysMystery() {
+      const d = new Date().getDay();
+      switch (d) {
+        case 1: case 6: return 'joyful';    // Mon, Sat
+        case 2: case 5: return 'sorrowful'; // Tue, Fri
+        case 0: case 3: return 'glorious';  // Sun, Wed
+        case 4: default: return 'luminous'; // Thu
+      }
+    }
+
+    function initializeApp() {
+      document.getElementById('mysterySelect').value = currentMystery;
+      document.getElementById('rosary').classList.add('active');
+      renderPrayers();
+    }
+
+    function startPrayer() {
+      const selected = document.getElementById('modalPrayerSelect').value;
+      currentPrayerType = selected;
+      document.getElementById('prayerTypeSelect').value = selected;
+      document.getElementById('prayerModal').style.display = 'none';
+      switchPrayer();
+    }
+
+    function switchPrayer() {
+      currentPrayerType = document.getElementById('prayerTypeSelect').value;
+      checkedPrayers = {};
+
+      // toggle sections
+      document.querySelectorAll('.prayer-section').forEach(s => s.classList.remove('active'));
+      const map = {
+        'rosary':'rosary',
+        'divine-mercy':'divine-mercy',
+        'st-benedict':'st-benedict',
+        'daily-readings':'daily-readings'
+      };
+      const targetId = map[currentPrayerType] || 'rosary';
+      document.getElementById(targetId).classList.add('active');
+
+      if (currentPrayerType === 'daily-readings') {
+        renderDailyReadings();
+      } else {
+        renderPrayers();
+      }
+    }
+
+    function switchMystery() {
+      currentMystery = document.getElementById('mysterySelect').value;
+      checkedPrayers = {};
+      renderPrayers();
+    }
+
+    function renderPrayers() {
+      if (currentPrayerType === 'rosary') renderRosary();
+      else if (currentPrayerType === 'divine-mercy') renderDivineMercy();
+      else if (currentPrayerType === 'st-benedict') renderStBenedict();
+    }
+
+    // ===============================
+    // Rosary (with verse line)
+    // ===============================
+    function renderRosary() {
+      const container = document.getElementById('rosaryPrayers');
+      let html = '';
+      let idx = 0;
+
+      html += '<div class="mystery-group"><div class="mystery-title">Opening Prayers</div>';
+      prayerData.rosary.opening.forEach(p => html += createPrayerHTML(p, idx++));
+      html += '</div>';
+
+      const mysteries = prayerData.rosary.mysteries[currentMystery];
+      mysteries.forEach(m => {
+        html += `<div class="mystery-group">
+          <div class="mystery-title">${m.title}</div>
+          <div class="mystery-description">
+            <strong>Mystery:</strong> ${m.description}<br/>
+            <em>Scripture: ${m.verse}</em>
+          </div>
+          <div class="meditation-instructions"><h4>How to Meditate:</h4><p>${m.meditation}</p></div>`;
+
+        html += createPrayerHTML({label:"Our Father", text:"Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."}, idx++);
+
+        for (let i=1;i<=10;i++){
+          html += createPrayerHTML({label:`Hail Mary (${i})`, text:"Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."}, idx++);
         }
 
-        // Initialize the app
-        function initializeApp() {
-            document.getElementById('mysterySelect').value = currentMystery;
-            // Show rosary section by default
-            document.getElementById('rosary').classList.add('active');
-            renderPrayers();
-        }
+        html += createPrayerHTML({label:"Glory Be", text:"Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen."}, idx++);
+        html += createPrayerHTML({label:"Fatima Prayer", text:"O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to Heaven, especially those most in need of Thy mercy. Amen."}, idx++);
+        html += '</div>';
+      });
 
-        // Start prayer from modal
-        function startPrayer() {
-            const selectedPrayer = document.getElementById('modalPrayerSelect').value;
-            currentPrayerType = selectedPrayer;
-            document.getElementById('prayerTypeSelect').value = selectedPrayer;
-            document.getElementById('prayerModal').style.display = 'none';
-            switchPrayer();
-        }
+      html += '<div class="mystery-group"><div class="mystery-title">Closing Prayers</div>';
+      prayerData.rosary.closing.forEach(p => html += createPrayerHTML(p, idx++));
+      html += '</div>';
 
-        // Switch prayer type
-        function switchPrayer() {
-            currentPrayerType = document.getElementById('prayerTypeSelect').value;
-            checkedPrayers = {}; // Reset checkboxes when switching prayers
-            
-            // Show/hide sections
-            document.querySelectorAll('.prayer-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(currentPrayerType).classList.add('active');
-            
-            renderPrayers();
-        }
+      container.innerHTML = html;
+    }
 
-        // Switch rosary mystery
-        function switchMystery() {
-            currentMystery = document.getElementById('mysterySelect').value;
-            checkedPrayers = {}; // Reset checkboxes when switching mysteries
-            renderPrayers();
-        }
+    // ===============================
+    // Divine Mercy / St Benedict
+    // ===============================
+    function renderDivineMercy() {
+      const container = document.getElementById('divineMercyPrayers');
+      let html = '';
+      prayerData.divineMercy.forEach((p,i)=> html += createPrayerHTML(p,i));
+      container.innerHTML = html;
+    }
+    function renderStBenedict() {
+      const container = document.getElementById('stBenedictPrayers');
+      let html = '';
+      prayerData.stBenedict.forEach((p,i)=> html += createPrayerHTML(p,i));
+      container.innerHTML = html;
+    }
 
-        // Render prayers based on current selection
-        function renderPrayers() {
-            if (currentPrayerType === 'rosary') {
-                renderRosary();
-            } else if (currentPrayerType === 'divine-mercy') {
-                renderDivineMercy();
-            } else if (currentPrayerType === 'st-benedict') {
-                renderStBenedict();
-            }
-        }
+    // ===============================
+    // Shared UI Helpers
+    // ===============================
+    function createPrayerHTML(prayer, index) {
+      const key = `${currentPrayerType}_${currentMystery}_${index}`;
+      const isChecked = checkedPrayers[key] || false;
+      return `
+        <div class="prayer-item">
+          <div class="prayer-checkbox">
+            <input type="checkbox" id="prayer_${index}" ${isChecked?'checked':''}
+                   onchange="updatePrayerStatus(${index})">
+            <div>
+              <span class="prayer-label">${prayer.label}</span>
+              <div class="prayer-text">${prayer.text}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function updatePrayerStatus(index) {
+      const key = `${currentPrayerType}_${currentMystery}_${index}`;
+      checkedPrayers[key] = document.getElementById(`prayer_${index}`).checked;
+    }
 
-        // Render rosary prayers (with Scripture verse line)
-        function renderRosary() {
-            const container = document.getElementById('rosaryPrayers');
-            let html = '';
-            let prayerIndex = 0;
+    // ===============================
+    // Daily Readings (JSONP + fallback)
+    // ===============================
+    function buildUsccbUrl(d) {
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const yy = String(d.getFullYear()%100).padStart(2,'0');
+      return `https://bible.usccb.org/bible/readings/${mm}${dd}${yy}.cfm`;
+    }
 
-            // Opening prayers
-            html += '<div class="mystery-group"><div class="mystery-title">Opening Prayers</div>';
-            prayerData.rosary.opening.forEach(prayer => {
-                html += createPrayerHTML(prayer, prayerIndex++);
-            });
-            html += '</div>';
+    function populateReadingsFromPlaceholders() {
+      const items = [];
+      const get = id => (document.getElementById(id)||{}).innerText || '';
+      const pairs = [
+        ['First Reading','Universalis_Mass_R1'],
+        ['Responsorial Psalm','Universalis_Mass_Ps'],
+        ['Second Reading','Universalis_Mass_R2'],
+        ['Gospel','Universalis_Mass_G']
+      ];
+      pairs.forEach(([label,key])=>{
+        const src = get(`${key}.source`).trim();
+        const text = get(`${key}.text`).trim();
+        if (src || text) items.push({label, src, text});
+      });
 
-            // Mysteries
-            const mysteries = prayerData.rosary.mysteries[currentMystery];
-            mysteries.forEach((mystery) => {
-                html += `<div class="mystery-group">
-                    <div class="mystery-title">${mystery.title}</div>
-                    <div class="mystery-description">
-                        <strong>Mystery:</strong> ${mystery.description}<br/>
-                        <em>Scripture: ${mystery.verse}</em>
-                    </div>
-                    <div class="meditation-instructions">
-                        <h4>How to Meditate:</h4>
-                        <p>${mystery.meditation}</p>
-                    </div>`;
+      const sel = document.getElementById('readingSelect');
+      if (!sel) return false;
+      sel.innerHTML = '';
+      if (items.length === 0) return false;
 
-                // Our Father for this mystery
-                html += createPrayerHTML({
-                    label: "Our Father",
-                    text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen."
-                }, prayerIndex++);
+      items.forEach((it,i)=>{
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = `${it.label}: ${it.src || '(source unavailable)'}`;
+        sel.appendChild(opt);
+      });
 
-                // 10 Hail Marys
-                for (let i = 1; i <= 10; i++) {
-                    html += createPrayerHTML({
-                        label: `Hail Mary (${i})`,
-                        text: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
-                    }, prayerIndex++);
-                }
+      const credit = document.getElementById('readingsCredit');
+      const copy = (document.getElementById('Universalis_copyright.text')||{}).innerText || '';
+      credit.innerHTML = `Readings via <a href="https://www.universalis.com" target="_blank" rel="noopener">Universalis</a>. ${copy}`;
 
-                // Glory Be for this mystery
-                html += createPrayerHTML({
-                    label: "Glory Be",
-                    text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen."
-                }, prayerIndex++);
+      document.getElementById('openReadingBtn').onclick = () => {
+        const idx = parseInt(sel.value||'0',10);
+        const it = items[idx];
+        const message = `${it.label}\n${it.src ? `\n${it.src}\n` : ''}\n${it.text || '(text unavailable)'}`;
+        alert(message);
+      };
+      return true;
+    }
 
-                // Fatima Prayer
-                html += createPrayerHTML({
-                    label: "Fatima Prayer",
-                    text: "O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to Heaven, especially those most in need of Thy mercy. Amen."
-                }, prayerIndex++);
+    function setupReadingsLinksFallback() {
+      const sel = document.getElementById('readingSelect');
+      if (!sel) return;
+      sel.innerHTML = '';
+      const today = new Date();
+      [
+        { label:'Open USCCB (today)', url: buildUsccbUrl(today) },
+        { label:'Open EWTN (today)', url: 'https://www.ewtn.com/catholicism/daily-readings' },
+        { label:'Open Universalis (today)', url: 'https://universalis.com/mass.htm' }
+      ].forEach(c=>{
+        const opt = document.createElement('option');
+        opt.value = c.url; opt.textContent = c.label; sel.appendChild(opt);
+      });
+      document.getElementById('openReadingBtn').onclick = ()=>{
+        window.open(sel.value,'_blank','noopener');
+      };
+      const credit = document.getElementById('readingsCredit');
+      credit.innerHTML = 'Couldn’t load inline readings — using trusted links for today.';
+    }
 
-                html += '</div>';
-            });
+    function renderDailyReadings() {
+      // Inject JSONP once; populate after a short delay; otherwise fallback
+      if (!readingsInjected) {
+        readingsInjected = true;
+        const s = document.createElement('script');
+        // Universalis JSONP demo script that fills our placeholder IDs
+        s.src = 'https://universalis.com/n-jsonp-example.js';
+        s.defer = true;
+        document.head.appendChild(s);
+        setTimeout(()=>{ if(!populateReadingsFromPlaceholders()) setupReadingsLinksFallback(); }, 1200);
+        setTimeout(()=>{ if(!populateReadingsFromPlaceholders()) setupReadingsLinksFallback(); }, 2500);
+      } else {
+        // already injected; just try to populate again (e.g., if section was hidden first)
+        if (!populateReadingsFromPlaceholders()) setupReadingsLinksFallback();
+      }
+    }
 
-            // Closing prayers
-            html += '<div class="mystery-group"><div class="mystery-title">Closing Prayers</div>';
-            prayerData.rosary.closing.forEach(prayer => {
-                html += createPrayerHTML(prayer, prayerIndex++);
-            });
-            html += '</div>';
-
-            container.innerHTML = html;
-        }
-
-        // Render Divine Mercy Chaplet
-        function renderDivineMercy() {
-            const container = document.getElementById('divineMercyPrayers');
-            let html = '';
-            
-            prayerData.divineMercy.forEach((prayer, index) => {
-                html += createPrayerHTML(prayer, index);
-            });
-            
-            container.innerHTML = html;
-        }
-
-        // Render St. Benedict Chaplet
-        function renderStBenedict() {
-            const container = document.getElementById('stBenedictPrayers');
-            let html = '';
-            
-            prayerData.stBenedict.forEach((prayer, index) => {
-                html += createPrayerHTML(prayer, index);
-            });
-            
-            container.innerHTML = html;
-        }
-
-        // Create HTML for a single prayer
-        function createPrayerHTML(prayer, index) {
-            const isChecked = checkedPrayers[`${currentPrayerType}_${currentMystery}_${index}`] || false;
-            return `
-                <div class="prayer-item">
-                    <div class="prayer-checkbox">
-                        <input type="checkbox" id="prayer_${index}" 
-                               ${isChecked ? 'checked' : ''} 
-                               onchange="updatePrayerStatus(${index})">
-                        <div>
-                            <span class="prayer-label">${prayer.label}</span>
-                            <div class="prayer-text">${prayer.text}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Update prayer status when checkbox is clicked
-        function updatePrayerStatus(index) {
-            const key = `${currentPrayerType}_${currentMystery}_${index}`;
-            checkedPrayers[key] = document.getElementById(`prayer_${index}`).checked;
-        }
-
-        // === Daily Readings Widget (non-breaking add-on) ===
-
-        // Build USCCB date URL (MMDDYY.cfm):
-        function buildUsccbUrl(d) {
-          const mm = String(d.getMonth()+1).padStart(2,'0');
-          const dd = String(d.getDate()).padStart(2,'0');
-          const yy = String(d.getFullYear()%100).padStart(2,'0');
-          return `https://bible.usccb.org/bible/readings/${mm}${dd}${yy}.cfm`;
-        }
-
-        // Fill dropdown from hidden Universalis placeholders
-        function populateReadingsFromPlaceholders() {
-          const items = [];
-          const get = id => (document.getElementById(id) || {}).innerText || '';
-
-          const pairs = [
-            ['First Reading',  'Universalis_Mass_R1'],
-            ['Responsorial Psalm','Universalis_Mass_Ps'],
-            ['Second Reading','Universalis_Mass_R2'],
-            ['Gospel',        'Universalis_Mass_G']
-          ];
-
-          pairs.forEach(([label, key]) => {
-            const src = get(`${key}.source`).trim();
-            const text = get(`${key}.text`).trim();
-            if (src || text) {
-              items.push({ label, src, text });
-            }
-          });
-
-          const sel = document.getElementById('readingSelect');
-          sel.innerHTML = '';
-          if (items.length === 0) return false;
-
-          items.forEach((it, i) => {
-            const opt = document.createElement('option');
-            opt.value = String(i);
-            opt.textContent = `${it.label}: ${it.src || '(source unavailable)'}`;
-            sel.appendChild(opt);
-          });
-
-          // Show credit (required by Universalis)
-          const credit = document.getElementById('readingsCredit');
-          const copy = (document.getElementById('Universalis_copyright.text')||{}).innerText || '';
-          credit.innerHTML = `Readings via <a href="https://www.universalis.com" target="_blank" rel="noopener">Universalis</a>. ${copy}`;
-
-          // When user clicks Open, show a simple alert with the text (non-intrusive)
-          document.getElementById('openReadingBtn').onclick = () => {
-            const idx = parseInt(sel.value || '0', 10);
-            const it = items[idx];
-            const message = `${it.label}\n${it.src ? `\n${it.src}\n` : ''}\n${it.text || '(text unavailable)'}`;
-            alert(message);
-          };
-
-          return true;
-        }
-
-        // Fallback: links for today's readings if JSONP fails
-        function setupReadingsLinksFallback() {
-          const sel = document.getElementById('readingSelect');
-          sel.innerHTML = '';
-          const today = new Date();
-          const choices = [
-            { label: 'Open USCCB (today)', url: buildUsccbUrl(today) },
-            { label: 'Open EWTN (today)',  url: 'https://www.ewtn.com/catholicism/daily-readings' },
-            { label: 'Open Universalis (today)', url: 'https://universalis.com/mass.htm' }
-          ];
-          choices.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.url;
-            opt.textContent = c.label;
-            sel.appendChild(opt);
-          });
-          document.getElementById('openReadingBtn').onclick = () => {
-            const url = sel.value;
-            window.open(url, '_blank', 'noopener');
-          };
-          document.getElementById('readingsCredit').innerHTML =
-            'Couldn’t load inline readings — using trusted links for today.';
-        }
-
-        // Kick off Universalis JSONP (no CORS issues)
-        (function injectUniversalisJSONP() {
-          var s = document.createElement('script');
-          s.src = 'https://universalis.com/n-jsonp-example.js';
-          s.defer = true;
-          document.head.appendChild(s);
-
-          var tried = false;
-          function tryPopulate() {
-            if (tried) return;
-            tried = true;
-            var ok = populateReadingsFromPlaceholders();
-            if (!ok) setupReadingsLinksFallback();
-          }
-          setTimeout(tryPopulate, 1200);
-          setTimeout(tryPopulate, 2500);
-        })();
-
-        // Initialize app when page loads
-        window.addEventListener('load', initializeApp);
-    </script>
+    // ===============================
+    // Boot
+    // ===============================
+    window.addEventListener('load', initializeApp);
+  </script>
 </body>
 </html>
