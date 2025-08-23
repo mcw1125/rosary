@@ -41,6 +41,13 @@
             margin-bottom: 10px;
         }
 
+        /* Daily Readings widget (added) */
+        #daily-readings {
+            margin: 16px 0 24px;
+            text-align: center;
+        }
+        #daily-readings a { color: #8B4513; text-decoration: underline; }
+
         .prayer-selector {
             margin-bottom: 20px;
             text-align: center;
@@ -280,6 +287,29 @@
             <p>A spiritual companion for your daily devotions</p>
         </div>
 
+        <!-- Daily Readings widget (added) -->
+        <div id="daily-readings">
+          <label for="readingSelect"><strong>Daily Mass Readings:</strong></label>
+          <select id="readingSelect" style="padding:10px 15px; border:2px solid #8B4513; border-radius:8px; margin-left:8px; min-width:240px;">
+            <option>Loading today’s readings…</option>
+          </select>
+          <button id="openReadingBtn" style="padding:10px 16px; margin-left:8px; background:#8B4513; color:#fff; border:none; border-radius:8px; font-weight:bold;">
+            Open
+          </button>
+          <div id="readingsCredit" class="repetition-note" style="margin-top:6px;"></div>
+
+          <!-- Hidden placeholders used by Universalis JSONP -->
+          <div id="Universalis_Mass_R1.source" style="display:none"></div>
+          <div id="Universalis_Mass_R1.text"   style="display:none"></div>
+          <div id="Universalis_Mass_Ps.source" style="display:none"></div>
+          <div id="Universalis_Mass_Ps.text"   style="display:none"></div>
+          <div id="Universalis_Mass_R2.source" style="display:none"></div>
+          <div id="Universalis_Mass_R2.text"   style="display:none"></div>
+          <div id="Universalis_Mass_G.source"  style="display:none"></div>
+          <div id="Universalis_Mass_G.text"    style="display:none"></div>
+          <div id="Universalis_copyright.text" style="display:none"></div>
+        </div>
+
         <div class="prayer-selector">
             <select id="prayerTypeSelect" onchange="switchPrayer()">
                 <option value="rosary">The Holy Rosary</option>
@@ -409,26 +439,31 @@
                         {
                             title: "First Joyful Mystery: The Annunciation",
                             description: "The Angel Gabriel announces to Mary that she will conceive and bear the Son of God.",
+                            verse: "Luke 1:26-38",
                             meditation: "Reflect on Mary's humility and trust in God's plan. Consider how we can say 'yes' to God in our own lives, even when His will seems difficult to understand."
                         },
                         {
                             title: "Second Joyful Mystery: The Visitation",
                             description: "Mary visits her cousin Elizabeth, who is pregnant with John the Baptist.",
+                            verse: "Luke 1:39-45",
                             meditation: "Contemplate Mary's charity in serving others despite her own condition. Think about how we can bring Christ to others through our actions and presence."
                         },
                         {
                             title: "Third Joyful Mystery: The Nativity",
                             description: "Jesus is born in Bethlehem and laid in a manger.",
+                            verse: "Luke 2:1-20",
                             meditation: "Meditate on the humility of God becoming man in such simple circumstances. Consider the poverty and simplicity that marked Christ's birth."
                         },
                         {
                             title: "Fourth Joyful Mystery: The Presentation",
                             description: "Mary and Joseph present the infant Jesus in the Temple according to Jewish law.",
+                            verse: "Luke 2:22-38",
                             meditation: "Reflect on Mary and Joseph's obedience to God's law and Simeon's prophecy. Think about how we can dedicate our lives to God's service."
                         },
                         {
                             title: "Fifth Joyful Mystery: Finding Jesus in the Temple",
                             description: "After three days of searching, Mary and Joseph find the twelve-year-old Jesus teaching in the Temple.",
+                            verse: "Luke 2:41-52",
                             meditation: "Consider Mary's anguish and joy. Reflect on how we sometimes lose Jesus through sin and the joy of finding Him again through repentance."
                         }
                     ],
@@ -436,26 +471,31 @@
                         {
                             title: "First Sorrowful Mystery: The Agony in the Garden",
                             description: "Jesus prays in the Garden of Gethsemane and accepts His Father's will.",
+                            verse: "Matthew 26:36-46",
                             meditation: "Contemplate Jesus's human fear and divine obedience. Reflect on accepting God's will in times of difficulty and the importance of prayer in times of trial."
                         },
                         {
                             title: "Second Sorrowful Mystery: The Scourging at the Pillar",
                             description: "Jesus is brutally whipped by Roman soldiers.",
+                            verse: "John 19:1",
                             meditation: "Meditate on Jesus's physical suffering endured for our sins. Consider how our sins contribute to His pain and our need for repentance."
                         },
                         {
                             title: "Third Sorrowful Mystery: The Crowning with Thorns",
                             description: "Soldiers mock Jesus by placing a crown of thorns on His head.",
+                            verse: "John 19:2-3",
                             meditation: "Reflect on the mockery Jesus endured and His patience in suffering. Think about how we can bear insults and humiliation with grace."
                         },
                         {
                             title: "Fourth Sorrowful Mystery: The Carrying of the Cross",
                             description: "Jesus carries His cross to Calvary, falling three times under its weight.",
+                            verse: "Luke 23:26-32",
                             meditation: "Consider Jesus's determination to complete His mission despite exhaustion. Reflect on how we can persevere in carrying our own crosses."
                         },
                         {
                             title: "Fifth Sorrowful Mystery: The Crucifixion",
                             description: "Jesus is nailed to the cross and dies for our salvation.",
+                            verse: "Luke 23:33-46",
                             meditation: "Meditate on the ultimate sacrifice of love. Contemplate Jesus's final words and Mary's sorrow. Consider the depth of God's love for humanity."
                         }
                     ],
@@ -463,26 +503,31 @@
                         {
                             title: "First Glorious Mystery: The Resurrection",
                             description: "Jesus rises from the dead on Easter Sunday morning.",
+                            verse: "Luke 24:1-12",
                             meditation: "Rejoice in Christ's victory over death and sin. Reflect on the hope this gives us for our own resurrection and eternal life."
                         },
                         {
                             title: "Second Glorious Mystery: The Ascension",
                             description: "Jesus ascends into heaven forty days after His resurrection.",
+                            verse: "Acts 1:6-11",
                             meditation: "Consider how Jesus prepares a place for us in heaven. Reflect on our call to focus on eternal rather than merely earthly concerns."
                         },
                         {
                             title: "Third Glorious Mystery: The Descent of the Holy Spirit",
                             description: "The Holy Spirit comes upon the Apostles at Pentecost.",
+                            verse: "Acts 2:1-4",
                             meditation: "Contemplate the gifts and fruits of the Holy Spirit in our lives. Pray for courage to spread the Gospel as the Apostles did."
                         },
                         {
                             title: "Fourth Glorious Mystery: The Assumption",
                             description: "Mary is taken up body and soul into heavenly glory.",
+                            verse: "Revelation 12:1",
                             meditation: "Reflect on Mary's reward for her faithfulness. Consider how our bodies are temples of the Holy Spirit and will share in resurrection."
                         },
                         {
                             title: "Fifth Glorious Mystery: The Coronation of Mary",
                             description: "Mary is crowned Queen of Heaven and Earth.",
+                            verse: "Revelation 12:1",
                             meditation: "Contemplate Mary's queenship and her role as our Mother and intercessor. Ask for her help in growing closer to her Son."
                         }
                     ],
@@ -490,26 +535,31 @@
                         {
                             title: "First Luminous Mystery: The Baptism of Jesus",
                             description: "Jesus is baptized by John in the Jordan River.",
+                            verse: "Matthew 3:13-17",
                             meditation: "Reflect on Jesus's humility in accepting baptism and the Trinity's revelation. Consider the graces received in our own baptism."
                         },
                         {
                             title: "Second Luminous Mystery: The Wedding at Cana",
                             description: "Jesus performs His first miracle at Mary's request.",
+                            verse: "John 2:1-11",
                             meditation: "Contemplate Mary's intercession and her instruction to 'do whatever He tells you.' Reflect on Mary's role in our spiritual lives."
                         },
                         {
                             title: "Third Luminous Mystery: The Proclamation of the Kingdom",
                             description: "Jesus preaches the Gospel and calls all to repentance.",
+                            verse: "Mark 1:14-15",
                             meditation: "Meditate on Jesus's teachings and our call to conversion. Consider how we can proclaim the Gospel through our words and actions."
                         },
                         {
                             title: "Fourth Luminous Mystery: The Transfiguration",
                             description: "Jesus is transfigured before Peter, James, and John on Mount Tabor.",
+                            verse: "Matthew 17:1-9",
                             meditation: "Contemplate Jesus's divine glory revealed to strengthen the Apostles. Reflect on moments when God has revealed Himself in your life."
                         },
                         {
                             title: "Fifth Luminous Mystery: The Institution of the Eucharist",
                             description: "Jesus institutes the Eucharist at the Last Supper.",
+                            verse: "Luke 22:14-20",
                             meditation: "Meditate on Jesus's gift of Himself in the Eucharist. Consider the great love shown in this sacrament and our response to it."
                         }
                     ]
@@ -907,7 +957,7 @@
             }
         }
 
-        // Render rosary prayers
+        // Render rosary prayers (with Scripture verse line)
         function renderRosary() {
             const container = document.getElementById('rosaryPrayers');
             let html = '';
@@ -922,11 +972,12 @@
 
             // Mysteries
             const mysteries = prayerData.rosary.mysteries[currentMystery];
-            mysteries.forEach((mystery, mysteryIndex) => {
+            mysteries.forEach((mystery) => {
                 html += `<div class="mystery-group">
                     <div class="mystery-title">${mystery.title}</div>
                     <div class="mystery-description">
-                        <strong>Mystery:</strong> ${mystery.description}
+                        <strong>Mystery:</strong> ${mystery.description}<br/>
+                        <em>Scripture: ${mystery.verse}</em>
                     </div>
                     <div class="meditation-instructions">
                         <h4>How to Meditate:</h4>
@@ -1019,6 +1070,105 @@
             const key = `${currentPrayerType}_${currentMystery}_${index}`;
             checkedPrayers[key] = document.getElementById(`prayer_${index}`).checked;
         }
+
+        // === Daily Readings Widget (non-breaking add-on) ===
+
+        // Build USCCB date URL (MMDDYY.cfm):
+        function buildUsccbUrl(d) {
+          const mm = String(d.getMonth()+1).padStart(2,'0');
+          const dd = String(d.getDate()).padStart(2,'0');
+          const yy = String(d.getFullYear()%100).padStart(2,'0');
+          return `https://bible.usccb.org/bible/readings/${mm}${dd}${yy}.cfm`;
+        }
+
+        // Fill dropdown from hidden Universalis placeholders
+        function populateReadingsFromPlaceholders() {
+          const items = [];
+          const get = id => (document.getElementById(id) || {}).innerText || '';
+
+          const pairs = [
+            ['First Reading',  'Universalis_Mass_R1'],
+            ['Responsorial Psalm','Universalis_Mass_Ps'],
+            ['Second Reading','Universalis_Mass_R2'],
+            ['Gospel',        'Universalis_Mass_G']
+          ];
+
+          pairs.forEach(([label, key]) => {
+            const src = get(`${key}.source`).trim();
+            const text = get(`${key}.text`).trim();
+            if (src || text) {
+              items.push({ label, src, text });
+            }
+          });
+
+          const sel = document.getElementById('readingSelect');
+          sel.innerHTML = '';
+          if (items.length === 0) return false;
+
+          items.forEach((it, i) => {
+            const opt = document.createElement('option');
+            opt.value = String(i);
+            opt.textContent = `${it.label}: ${it.src || '(source unavailable)'}`;
+            sel.appendChild(opt);
+          });
+
+          // Show credit (required by Universalis)
+          const credit = document.getElementById('readingsCredit');
+          const copy = (document.getElementById('Universalis_copyright.text')||{}).innerText || '';
+          credit.innerHTML = `Readings via <a href="https://www.universalis.com" target="_blank" rel="noopener">Universalis</a>. ${copy}`;
+
+          // When user clicks Open, show a simple alert with the text (non-intrusive)
+          document.getElementById('openReadingBtn').onclick = () => {
+            const idx = parseInt(sel.value || '0', 10);
+            const it = items[idx];
+            const message = `${it.label}\n${it.src ? `\n${it.src}\n` : ''}\n${it.text || '(text unavailable)'}`;
+            alert(message);
+          };
+
+          return true;
+        }
+
+        // Fallback: links for today's readings if JSONP fails
+        function setupReadingsLinksFallback() {
+          const sel = document.getElementById('readingSelect');
+          sel.innerHTML = '';
+          const today = new Date();
+          const choices = [
+            { label: 'Open USCCB (today)', url: buildUsccbUrl(today) },
+            { label: 'Open EWTN (today)',  url: 'https://www.ewtn.com/catholicism/daily-readings' },
+            { label: 'Open Universalis (today)', url: 'https://universalis.com/mass.htm' }
+          ];
+          choices.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.url;
+            opt.textContent = c.label;
+            sel.appendChild(opt);
+          });
+          document.getElementById('openReadingBtn').onclick = () => {
+            const url = sel.value;
+            window.open(url, '_blank', 'noopener');
+          };
+          document.getElementById('readingsCredit').innerHTML =
+            'Couldn’t load inline readings — using trusted links for today.';
+        }
+
+        // Kick off Universalis JSONP (no CORS issues)
+        (function injectUniversalisJSONP() {
+          var s = document.createElement('script');
+          s.src = 'https://universalis.com/n-jsonp-example.js';
+          s.defer = true;
+          document.head.appendChild(s);
+
+          var tried = false;
+          function tryPopulate() {
+            if (tried) return;
+            tried = true;
+            var ok = populateReadingsFromPlaceholders();
+            if (!ok) setupReadingsLinksFallback();
+          }
+          setTimeout(tryPopulate, 1200);
+          setTimeout(tryPopulate, 2500);
+        })();
 
         // Initialize app when page loads
         window.addEventListener('load', initializeApp);
