@@ -15,6 +15,8 @@
       min-height:100vh;
     }
 
+    .hidden { display:none !important; }
+
     .container {
       max-width:800px; margin:0 auto; padding:20px;
       background:#fff; min-height:100vh;
@@ -134,7 +136,7 @@
 </head>
 <body>
   <!-- Modal for prayer selection -->
-  <div id="prayerModal" class="modal">
+  <div id="prayerModal" class="modal" aria-modal="true" role="dialog">
     <div class="modal-content">
       <h2>Choose Your Prayer</h2>
       <select id="modalPrayerSelect">
@@ -143,7 +145,8 @@
         <option value="st-benedict">St. Benedict Chaplet</option>
         <option value="daily-readings">Daily Readings</option>
       </select>
-      <button onclick="startPrayer()">Begin Prayer</button>
+      <!-- Keep inline onclick AND attach a JS listener for robustness -->
+      <button id="beginPrayerBtn" onclick="startPrayer()">Begin Prayer</button>
     </div>
   </div>
 
@@ -452,35 +455,69 @@
       }
     }
 
+    // Make sure startPrayer is available even if other init work fails
+    function startPrayer() {
+      try {
+        const selected = document.getElementById('modalPrayerSelect')?.value || 'rosary';
+        const mainSelect = document.getElementById('prayerTypeSelect');
+        if (mainSelect) mainSelect.value = selected;
+
+        const modal = document.getElementById('prayerModal');
+        if (modal) { modal.classList.add('hidden'); modal.setAttribute('aria-hidden', 'true'); }
+
+        switchPrayer();
+      } catch (e) {
+        console.error('startPrayer error:', e);
+      }
+    }
+
     function initializeApp() {
-      document.getElementById('mysterySelect').value = currentMystery;
-      document.getElementById('rosary').classList.add('active');
+      // Hook up the Begin button defensively (in addition to inline onclick)
+      const beginBtn = document.getElementById('beginPrayerBtn');
+      if (beginBtn) beginBtn.addEventListener('click', startPrayer);
+
+      // Preselect today's mysteries (guard if element missing)
+      const mysterySel = document.getElementById('mysterySelect');
+      if (mysterySel) mysterySel.value = currentMystery;
+
+      // Show Rosary by default
+      const rosarySection = document.getElementById('rosary');
+      if (rosarySection) rosarySection.classList.add('active');
+
       renderPrayers();
 
       // Daily readings UI
-      document.getElementById('openReadingBtn').addEventListener('click', openReading);
-      document.getElementById('readingsFrame').src = 'https://universalis.com/mass.htm';
-    }
+      const openBtn = document.getElementById('openReadingBtn');
+      if (openBtn) openBtn.addEventListener('click', openReading);
 
-    function startPrayer() {
-      const selected = document.getElementById('modalPrayerSelect').value;
-      document.getElementById('prayerTypeSelect').value = selected;
-      document.getElementById('prayerModal').style.display = 'none';
-      switchPrayer();
+      const frame = document.getElementById('readingsFrame');
+      if (frame) frame.src = 'https://universalis.com/mass.htm';
+
+      // Hide modal on Escape for convenience
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape') {
+          const modal = document.getElementById('prayerModal');
+          if (modal && !modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden','true');
+          }
+        }
+      });
     }
 
     function switchPrayer() {
-      currentPrayerType = document.getElementById('prayerTypeSelect').value;
+      currentPrayerType = document.getElementById('prayerTypeSelect')?.value || 'rosary';
       checkedPrayers = {};
 
       document.querySelectorAll('.prayer-section').forEach(s => s.classList.remove('active'));
-      document.getElementById(currentPrayerType).classList.add('active');
+      const current = document.getElementById(currentPrayerType);
+      if (current) current.classList.add('active');
 
       if (currentPrayerType !== 'daily-readings') renderPrayers();
     }
 
     function switchMystery() {
-      currentMystery = document.getElementById('mysterySelect').value;
+      currentMystery = document.getElementById('mysterySelect')?.value || currentMystery;
       checkedPrayers = {};
       renderPrayers();
     }
@@ -496,6 +533,7 @@
     // ===============================
     function renderRosary() {
       const container = document.getElementById('rosaryPrayers');
+      if (!container) return;
       let html = '';
       let idx = 0;
 
@@ -536,6 +574,7 @@
     // ===============================
     function renderDivineMercy() {
       const container = document.getElementById('divineMercyPrayers');
+      if (!container) return;
       let html = '';
       prayerData.divineMercy.forEach((p,i)=> html += createPrayerHTML(p,i));
       container.innerHTML = html;
@@ -543,5 +582,135 @@
 
     function renderStBenedict() {
       const container = document.getElementById('stBenedictPrayers');
+      if (!container) return;
       let html = '';
-      prayerData.stBenedict.forEach((p,i)=
+      prayerData.stBenedict.forEach((p,i)=> html += createPrayerHTML(p,i));
+      container.innerHTML = html;
+    }
+
+    // ===============================
+    // Shared UI Helpers
+    // ===============================
+    function createPrayerHTML(prayer, index) {
+      const key = `${currentPrayerType}_${currentMystery}_${index}`;
+      const isChecked = checkedPrayers[key] || false;
+      return `
+        <div class="prayer-item">
+          <div class="prayer-checkbox">
+            <input type="checkbox" id="prayer_${index}" ${isChecked?'checked':''}
+                   onchange="updatePrayerStatus(${index})">
+            <div>
+              <span class="prayer-label">${prayer.label}</span>
+              <div class="prayer-text">${prayer.text}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function updatePrayerStatus(index) {
+      const key = `${currentPrayerType}_${currentMystery}_${index}`;
+      checkedPrayers[key] = document.getElementById(`prayer_${index}`).checked;
+    }
+
+    // ===============================
+    // Daily Readings
+    // ===============================
+    function buildUsccbUrl(d) {
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const yy = String(d.getFullYear()%100).padStart(2,'0');
+      return `https://bible.usccb.org/bible/readings/${mm}${dd}${yy}.cfm`;
+    }
+
+    function showTextOnlyReadings() {
+      document.getElementById('readingsFrameWrap').style.display = 'none';
+      document.getElementById('readingsTextWrap').style.display = 'block';
+      document.getElementById('readingsCredit').innerHTML =
+        'Text-only mode via <a href="https://www.universalis.com/n-jsonp.htm" target="_blank" rel="noopener">Universalis JSONP</a>.';
+
+      if (!document.getElementById('universalis-js')) {
+        loadUniversalisJSONP('USA'); // US calendar
+      } else {
+        postFillAdjustments();
+      }
+    }
+
+    function showInlineUniversalis() {
+      document.getElementById('readingsTextWrap').style.display = 'none';
+      document.getElementById('readingsFrameWrap').style.display = 'block';
+      const frame = document.getElementById('readingsFrame');
+      frame.src = 'https://universalis.com/mass.htm';
+      document.getElementById('readingsCredit').innerHTML =
+        'Full page via <a href="https://www.universalis.com" target="_blank" rel="noopener">Universalis</a>.';
+    }
+
+    function openReading() {
+      const choice = document.getElementById('readingSelect').value;
+      if (choice === 'usccb') {
+        const url = buildUsccbUrl(new Date());
+        window.open(url, '_blank', 'noopener');
+        document.getElementById('readingsCredit').innerHTML = 'USCCB opened in a new tab.';
+      } else if (choice === 'universalis-text') {
+        showTextOnlyReadings();
+      } else {
+        showInlineUniversalis();
+      }
+    }
+
+    // ----- Universalis JSONP support -----
+    function setUniversalisElement(thing, text) {
+      const where = document.getElementById("Universalis_" + thing);
+      if (where) where.innerHTML = text;
+    }
+
+    function universalisCallback(data) {
+      for (var thing in data) {
+        var d = data[thing];
+        if (typeof d != "object") {
+          setUniversalisElement(thing, d);
+        } else {
+          for (var t in d) {
+            var dd = d[t];
+            setUniversalisElement(thing + "." + t, dd);
+          }
+        }
+      }
+      postFillAdjustments();
+    }
+
+    function postFillAdjustments(){
+      const r2 = document.getElementById('Universalis_Mass_R2.text');
+      const r2Card = document.getElementById('secondReadingCard');
+      if (r2 && r2Card) {
+        const hasText = r2.innerHTML && r2.innerHTML.trim().length > 0;
+        r2Card.style.display = hasText ? 'block' : 'none';
+      }
+    }
+
+    function loadUniversalisJSONP(region) {
+      (function(d, id, region, day){
+        function yyyymmdd(day){
+          var now = new Date();
+          var delta = (day === 7) ? (7 - now.getDay()) : 0; // 1=today, 7=next Sunday
+          var when = new Date(now.getTime() + 86400000 * delta);
+          return (1900 + when.getYear()) * 10000 + (1 + when.getMonth()) * 100 + when.getDate();
+        }
+        var js, fjs = d.getElementsByTagName('script')[0];
+        if (!d.getElementById(id)) {
+          js = d.createElement('script');
+          js.id = id;
+          js.src = document.location.protocol + '//universalis.com/' +
+                   (region ? (region + '/') : '') +
+                   yyyymmdd(1) + '/jsonpmass.js?callback=universalisCallback';
+          fjs.parentNode.insertBefore(js, fjs);
+        }
+      })(document, 'universalis-js', region || '', 1);
+    }
+
+    // Boot early (DOMContentLoaded is more reliable than window.load here)
+    document.addEventListener('DOMContentLoaded', initializeApp);
+    // Also expose startPrayer globally (safety)
+    window.startPrayer = startPrayer;
+  </script>
+</body>
+</html>
