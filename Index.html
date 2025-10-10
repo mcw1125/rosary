@@ -267,36 +267,32 @@
       <div class="instructions">
         <h3>The Divine Office - Prayer of the Church</h3>
         <p>The Liturgy of the Hours, also known as the Divine Office, is the daily prayer of the Catholic Church, marking the hours of each day and sanctifying the day with prayer.</p>
-        <p><strong>Traditional prayer times:</strong></p>
+        <p><strong>The Five Canonical Hours:</strong></p>
         <ul>
-          <li><strong>Office of Readings:</strong> Any time - reflection on Scripture</li>
-          <li><strong>Morning Prayer (Lauds):</strong> Upon rising - dedication of the day</li>
-          <li><strong>Midmorning Prayer (Terce):</strong> ~9 AM - invocation of Holy Spirit</li>
-          <li><strong>Midday Prayer (Sext):</strong> ~12 PM - renewal for afternoon</li>
-          <li><strong>Midafternoon Prayer (None):</strong> ~3 PM - hour of Jesus' death</li>
-          <li><strong>Evening Prayer (Vespers):</strong> ~6 PM - thanksgiving for day</li>
-          <li><strong>Night Prayer (Compline):</strong> Before bed - examination & peace</li>
+          <li><strong>Office of Readings:</strong> Any time - reflection on Scripture and writings of saints</li>
+          <li><strong>Morning Prayer (Lauds):</strong> Upon rising - dedication of the day to God</li>
+          <li><strong>Daytime Prayer:</strong> Midday - sanctification of the work day</li>
+          <li><strong>Evening Prayer (Vespers):</strong> Evening - thanksgiving for the day</li>
+          <li><strong>Night Prayer (Compline):</strong> Before bed - examination & peace for the night</li>
         </ul>
       </div>
 
       <div class="hour-selector">
-        <label for="hourSelect"><strong>Select Hour:</strong></label>
-        <select id="hourSelect" onchange="switchHour()">
+        <label for="hourSelect"><strong>Select Prayer Hour:</strong></label>
+        <select id="hourSelect">
           <option value="office-readings">Office of Readings</option>
           <option value="morning">Morning Prayer (Lauds)</option>
-          <option value="midmorning">Midmorning Prayer (Terce)</option>
-          <option value="midday">Midday Prayer (Sext)</option>
-          <option value="midafternoon">Midafternoon Prayer (None)</option>
+          <option value="daytime">Daytime Prayer</option>
           <option value="evening">Evening Prayer (Vespers)</option>
           <option value="night">Night Prayer (Compline)</option>
         </select>
       </div>
 
       <div id="liturgyHoursWidget">
-        <label for="liturgySourceSelect"><strong>Source:</strong></label>
+        <label for="liturgySourceSelect"><strong>View Mode:</strong></label>
         <select id="liturgySourceSelect">
-          <option value="universalis">Universalis (full page)</option>
-          <option value="universalis-mobile">Universalis (mobile view)</option>
+          <option value="universalis">Full Page</option>
+          <option value="universalis-mobile">Mobile View</option>
         </select>
         <button id="openHourBtn">Open Prayer</button>
         <div id="liturgyCredit" class="repetition-note">
@@ -603,10 +599,6 @@
       renderPrayers();
     }
 
-    function switchHour() {
-      currentHour = document.getElementById('hourSelect')?.value || 'morning';
-    }
-
     function renderPrayers() {
       if (currentPrayerType === 'rosary') renderRosary();
       else if (currentPrayerType === 'divine-mercy') renderDivineMercy();
@@ -702,18 +694,20 @@
     // ===============================
     function openHour() {
       const source = document.getElementById('liturgySourceSelect').value;
+      const hourSelect = document.getElementById('hourSelect');
+      const currentHour = hourSelect.value;
+      
       const hourUrls = {
         'office-readings': 'office.htm',
         'morning': 'lauds.htm',
-        'midmorning': 'terce.htm',
-        'midday': 'sext.htm',
-        'midafternoon': 'none.htm',
+        'daytime': 'daytime.htm',
         'evening': 'vespers.htm',
         'night': 'compline.htm'
       };
 
+      // Fixed mobile URL - use the correct Universalis mobile format
       const baseUrl = source === 'universalis-mobile' 
-        ? 'https://universalis.com/mobile.htm#'
+        ? 'https://universalis.com/mobile/'
         : 'https://universalis.com/';
 
       const frame = document.getElementById('liturgyFrame');
@@ -821,7 +815,7 @@
     document.addEventListener('DOMContentLoaded', initializeApp);
     // Also expose startPrayer globally (safety)
     window.startPrayer = startPrayer;
-    window.switchHour = switchHour;
+    window.openHour = openHour;
   </script>
 </body>
 </html>
