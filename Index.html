@@ -515,7 +515,6 @@
     // ===============================
     let currentPrayerType = 'rosary';
     let currentMystery = getTodaysMystery();
-    let currentHour = 'morning';
     let checkedPrayers = {};
 
     function getTodaysMystery() {
@@ -697,22 +696,36 @@
       const hourSelect = document.getElementById('hourSelect');
       const currentHour = hourSelect.value;
       
+      // Correct mobile URLs for Universalis
       const hourUrls = {
-        'office-readings': 'office.htm',
-        'morning': 'lauds.htm',
-        'daytime': 'daytime.htm',
-        'evening': 'vespers.htm',
-        'night': 'compline.htm'
+        'office-readings': {
+          full: 'https://universalis.com/office.htm',
+          mobile: 'https://universalis.com/mobile.htm#office'
+        },
+        'morning': {
+          full: 'https://universalis.com/lauds.htm',
+          mobile: 'https://universalis.com/mobile.htm#lauds'
+        },
+        'daytime': {
+          full: 'https://universalis.com/daytime.htm',
+          mobile: 'https://universalis.com/mobile.htm#daytime'
+        },
+        'evening': {
+          full: 'https://universalis.com/vespers.htm',
+          mobile: 'https://universalis.com/mobile.htm#vespers'
+        },
+        'night': {
+          full: 'https://universalis.com/compline.htm',
+          mobile: 'https://universalis.com/mobile.htm#compline'
+        }
       };
-
-      // Fixed mobile URL - use the correct Universalis mobile format
-      const baseUrl = source === 'universalis-mobile' 
-        ? 'https://universalis.com/mobile/'
-        : 'https://universalis.com/';
 
       const frame = document.getElementById('liturgyFrame');
       if (frame && hourUrls[currentHour]) {
-        frame.src = baseUrl + hourUrls[currentHour];
+        const url = source === 'universalis-mobile' 
+          ? hourUrls[currentHour].mobile 
+          : hourUrls[currentHour].full;
+        frame.src = url;
       }
     }
 
