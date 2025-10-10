@@ -42,6 +42,12 @@
       border-radius:6px; background:#fff;
     }
 
+    .hour-selector { margin-bottom:20px; text-align:center; }
+    .hour-selector select {
+      padding:10px 15px; font-size:14px; border:2px solid #4682b4;
+      border-radius:6px; background:#fff; color:#4682b4; font-weight:bold;
+    }
+
     .prayer-section { display:none; margin-bottom:30px; }
     .prayer-section.active { display:block; }
 
@@ -85,6 +91,14 @@
     .prayer-label { font-weight:bold; color:#8B4513; margin-bottom:8px; display:block; }
     .repetition-note { font-size:0.9em; color:#666; margin-top:8px; }
 
+    .hour-group {
+      margin-bottom:25px; border:2px solid #4682b4; border-radius:10px;
+      padding:20px; background:#f0f8ff;
+    }
+    .hour-title {
+      color:#4682b4; font-size:1.4em; margin-bottom:15px; text-align:center; font-weight:bold;
+    }
+
     /* Modal */
     .modal {
       display:flex; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%;
@@ -126,11 +140,22 @@
     .reading-card h3 { color:#8B4513; margin-bottom:8px; }
     .reading-card small { color:#555; font-style:italic; }
 
+    /* Liturgy of the Hours */
+    #liturgyHoursWidget { margin:16px 0 16px; text-align:center; }
+    #hourSelect {
+      padding:10px 15px; border:2px solid #4682b4; border-radius:8px; min-width:200px;
+    }
+    #openHourBtn {
+      padding:10px 16px; margin-left:8px; background:#4682b4; color:#fff;
+      border:none; border-radius:8px; font-weight:bold;
+    }
+    #liturgyFrame { width:100%; height:700px; border:0; display:block; border-radius:8px; }
+
     @media (max-width:600px){
       .container{ padding:10px; }
       .header h1{ font-size:1.8em; }
       .prayer-item{ padding:10px; }
-      #readingsFrame{ height:520px; }
+      #readingsFrame, #liturgyFrame { height:520px; }
     }
   </style>
 </head>
@@ -143,6 +168,7 @@
         <option value="rosary">The Holy Rosary</option>
         <option value="divine-mercy">Divine Mercy Chaplet</option>
         <option value="st-benedict">St. Benedict Chaplet</option>
+        <option value="liturgy-hours">Liturgy of the Hours</option>
         <option value="daily-readings">Daily Readings</option>
       </select>
       <!-- Keep inline onclick AND attach a JS listener for robustness -->
@@ -162,6 +188,7 @@
         <option value="rosary">The Holy Rosary</option>
         <option value="divine-mercy">Divine Mercy Chaplet</option>
         <option value="st-benedict">St. Benedict Chaplet</option>
+        <option value="liturgy-hours">Liturgy of the Hours</option>
         <option value="daily-readings">Daily Readings</option>
       </select>
     </div>
@@ -233,6 +260,55 @@
       <div id="stBenedictPrayers"></div>
     </div>
 
+    <!-- Liturgy of the Hours Section -->
+    <div id="liturgy-hours" class="prayer-section">
+      <div class="section-title">Liturgy of the Hours</div>
+
+      <div class="instructions">
+        <h3>The Divine Office - Prayer of the Church</h3>
+        <p>The Liturgy of the Hours, also known as the Divine Office, is the daily prayer of the Catholic Church, marking the hours of each day and sanctifying the day with prayer.</p>
+        <p><strong>Traditional prayer times:</strong></p>
+        <ul>
+          <li><strong>Office of Readings:</strong> Any time - reflection on Scripture</li>
+          <li><strong>Morning Prayer (Lauds):</strong> Upon rising - dedication of the day</li>
+          <li><strong>Midmorning Prayer (Terce):</strong> ~9 AM - invocation of Holy Spirit</li>
+          <li><strong>Midday Prayer (Sext):</strong> ~12 PM - renewal for afternoon</li>
+          <li><strong>Midafternoon Prayer (None):</strong> ~3 PM - hour of Jesus' death</li>
+          <li><strong>Evening Prayer (Vespers):</strong> ~6 PM - thanksgiving for day</li>
+          <li><strong>Night Prayer (Compline):</strong> Before bed - examination & peace</li>
+        </ul>
+      </div>
+
+      <div class="hour-selector">
+        <label for="hourSelect"><strong>Select Hour:</strong></label>
+        <select id="hourSelect" onchange="switchHour()">
+          <option value="office-readings">Office of Readings</option>
+          <option value="morning">Morning Prayer (Lauds)</option>
+          <option value="midmorning">Midmorning Prayer (Terce)</option>
+          <option value="midday">Midday Prayer (Sext)</option>
+          <option value="midafternoon">Midafternoon Prayer (None)</option>
+          <option value="evening">Evening Prayer (Vespers)</option>
+          <option value="night">Night Prayer (Compline)</option>
+        </select>
+      </div>
+
+      <div id="liturgyHoursWidget">
+        <label for="liturgySourceSelect"><strong>Source:</strong></label>
+        <select id="liturgySourceSelect">
+          <option value="universalis">Universalis (full page)</option>
+          <option value="universalis-mobile">Universalis (mobile view)</option>
+        </select>
+        <button id="openHourBtn">Open Prayer</button>
+        <div id="liturgyCredit" class="repetition-note">
+          Powered by Universalis. The Liturgy of the Hours changes daily according to the Church calendar.
+        </div>
+      </div>
+
+      <div id="liturgyFrameWrap">
+        <iframe id="liturgyFrame" title="Liturgy of the Hours" src="https://universalis.com/"></iframe>
+      </div>
+    </div>
+
     <!-- Daily Readings Section -->
     <div id="daily-readings" class="prayer-section">
       <div class="section-title">Daily Mass Readings</div>
@@ -241,7 +317,7 @@
         <ul>
           <li><strong>Universalis (text-only)</strong> – minimal Bible text (no images/menus).</li>
           <li><strong>Universalis (inline)</strong> – full Universalis page inside this site.</li>
-          <li><strong>USCCB (new tab)</strong> – opens today’s USCCB page (they block embedding).</li>
+          <li><strong>USCCB (new tab)</strong> – opens today's USCCB page (they block embedding).</li>
         </ul>
       </div>
 
@@ -443,6 +519,7 @@
     // ===============================
     let currentPrayerType = 'rosary';
     let currentMystery = getTodaysMystery();
+    let currentHour = 'morning';
     let checkedPrayers = {};
 
     function getTodaysMystery() {
@@ -480,6 +557,10 @@
       const mysterySel = document.getElementById('mysterySelect');
       if (mysterySel) mysterySel.value = currentMystery;
 
+      // Liturgy of the Hours button
+      const openHourBtn = document.getElementById('openHourBtn');
+      if (openHourBtn) openHourBtn.addEventListener('click', openHour);
+
       // Show Rosary by default
       const rosarySection = document.getElementById('rosary');
       if (rosarySection) rosarySection.classList.add('active');
@@ -513,13 +594,17 @@
       const current = document.getElementById(currentPrayerType);
       if (current) current.classList.add('active');
 
-      if (currentPrayerType !== 'daily-readings') renderPrayers();
+      if (currentPrayerType !== 'daily-readings' && currentPrayerType !== 'liturgy-hours') renderPrayers();
     }
 
     function switchMystery() {
       currentMystery = document.getElementById('mysterySelect')?.value || currentMystery;
       checkedPrayers = {};
       renderPrayers();
+    }
+
+    function switchHour() {
+      currentHour = document.getElementById('hourSelect')?.value || 'morning';
     }
 
     function renderPrayers() {
@@ -610,6 +695,31 @@
     function updatePrayerStatus(index) {
       const key = `${currentPrayerType}_${currentMystery}_${index}`;
       checkedPrayers[key] = document.getElementById(`prayer_${index}`).checked;
+    }
+
+    // ===============================
+    // Liturgy of the Hours
+    // ===============================
+    function openHour() {
+      const source = document.getElementById('liturgySourceSelect').value;
+      const hourUrls = {
+        'office-readings': 'office.htm',
+        'morning': 'lauds.htm',
+        'midmorning': 'terce.htm',
+        'midday': 'sext.htm',
+        'midafternoon': 'none.htm',
+        'evening': 'vespers.htm',
+        'night': 'compline.htm'
+      };
+
+      const baseUrl = source === 'universalis-mobile' 
+        ? 'https://universalis.com/mobile.htm#'
+        : 'https://universalis.com/';
+
+      const frame = document.getElementById('liturgyFrame');
+      if (frame && hourUrls[currentHour]) {
+        frame.src = baseUrl + hourUrls[currentHour];
+      }
     }
 
     // ===============================
@@ -711,6 +821,7 @@
     document.addEventListener('DOMContentLoaded', initializeApp);
     // Also expose startPrayer globally (safety)
     window.startPrayer = startPrayer;
+    window.switchHour = switchHour;
   </script>
 </body>
 </html>
